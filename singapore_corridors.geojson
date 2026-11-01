@@ -1,0 +1,377 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "TPE (Tampines Expressway) - High Risk",
+        "risk_level": "CRITICAL",
+        "yoy_trend": "+14.2% YoY",
+        "hazard": "Motorcycle lane-splitting & morning peak speed shear (Band 7 to Band 1)"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.871,
+            1.401
+          ],
+          [
+            103.886,
+            1.3985
+          ],
+          [
+            103.9056,
+            1.3912
+          ],
+          [
+            103.935,
+            1.375
+          ],
+          [
+            103.948,
+            1.3645
+          ],
+          [
+            103.961,
+            1.356
+          ],
+          [
+            103.978,
+            1.3495
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "BKE (Bukit Timah Expressway) - Moderate/High Risk",
+        "risk_level": "ELEVATED",
+        "yoy_trend": "+8.7% YoY",
+        "hazard": "Wet-weather hydroplaning on curved grades; heavy Malaysian vehicle inbound flow"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.7705,
+            1.4465
+          ],
+          [
+            103.7745,
+            1.431
+          ],
+          [
+            103.778,
+            1.412
+          ],
+          [
+            103.7781,
+            1.3654
+          ],
+          [
+            103.7795,
+            1.345
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "CTE (Central Expressway) - High Risk",
+        "risk_level": "CRITICAL",
+        "yoy_trend": "+11.3% YoY",
+        "hazard": "Speed camera sudden deceleration shockwave; subterranean tunnel bottlenecks"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.8652,
+            1.3985
+          ],
+          [
+            103.8598,
+            1.378
+          ],
+          [
+            103.858,
+            1.3615
+          ],
+          [
+            103.8569,
+            1.3418
+          ],
+          [
+            103.861,
+            1.3282
+          ],
+          [
+            103.8525,
+            1.3195
+          ],
+          [
+            103.847,
+            1.3105
+          ],
+          [
+            103.8435,
+            1.3032
+          ],
+          [
+            103.842,
+            1.2865
+          ],
+          [
+            103.8305,
+            1.2762
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "AYE (Ayer Rajah Expressway) - High Logistics Risk",
+        "risk_level": "ELEVATED",
+        "yoy_trend": "+9.1% YoY",
+        "hazard": "Container truck lane weaving; blind-spot friction with passenger vehicles"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.855,
+            1.2725
+          ],
+          [
+            103.839,
+            1.2695
+          ],
+          [
+            103.8305,
+            1.2762
+          ],
+          [
+            103.8115,
+            1.2825
+          ],
+          [
+            103.7845,
+            1.298
+          ],
+          [
+            103.7652,
+            1.3145
+          ],
+          [
+            103.748,
+            1.3175
+          ],
+          [
+            103.731,
+            1.3225
+          ],
+          [
+            103.6895,
+            1.317
+          ],
+          [
+            103.636,
+            1.3485
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "PIE (Pan Island Expressway) - Arterial Backbone",
+        "risk_level": "MODERATE",
+        "yoy_trend": "+4.2% YoY",
+        "hazard": "High absolute volume; frequent rainy-day minor rear-end shunt collisions"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.6558,
+            1.3256
+          ],
+          [
+            103.692,
+            1.334
+          ],
+          [
+            103.7142,
+            1.3435
+          ],
+          [
+            103.7431,
+            1.3385
+          ],
+          [
+            103.7658,
+            1.3361
+          ],
+          [
+            103.7932,
+            1.3378
+          ],
+          [
+            103.821,
+            1.3415
+          ],
+          [
+            103.8375,
+            1.3342
+          ],
+          [
+            103.8475,
+            1.3315
+          ],
+          [
+            103.861,
+            1.3282
+          ],
+          [
+            103.8732,
+            1.3275
+          ],
+          [
+            103.892,
+            1.3255
+          ],
+          [
+            103.9085,
+            1.3252
+          ],
+          [
+            103.9285,
+            1.3325
+          ],
+          [
+            103.951,
+            1.345
+          ],
+          [
+            103.966,
+            1.3495
+          ],
+          [
+            103.9875,
+            1.3585
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "KPE (Kallang-Paya Lebar Expressway) - Tunnel Corridor",
+        "risk_level": "MODERATE",
+        "yoy_trend": "+3.5% YoY",
+        "hazard": "Enclosed subterranean acoustics, optical adaptation delay upon tunnel exit"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.902,
+            1.388
+          ],
+          [
+            103.8965,
+            1.3735
+          ],
+          [
+            103.8895,
+            1.349
+          ],
+          [
+            103.884,
+            1.3295
+          ],
+          [
+            103.8785,
+            1.315
+          ],
+          [
+            103.869,
+            1.2985
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ECP (East Coast Parkway) - Coastal Corridor",
+        "risk_level": "LOW/MODERATE",
+        "yoy_trend": "-1.8% YoY",
+        "hazard": "Crosswinds along coastal stretches; late-night speeding past Marina Bay"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.9875,
+            1.3585
+          ],
+          [
+            103.948,
+            1.318
+          ],
+          [
+            103.908,
+            1.302
+          ],
+          [
+            103.8795,
+            1.2965
+          ],
+          [
+            103.861,
+            1.2885
+          ],
+          [
+            103.855,
+            1.2725
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "SLE (Seletar Expressway) - Northern Arterial",
+        "risk_level": "MODERATE",
+        "yoy_trend": "+2.1% YoY",
+        "hazard": "Wildlife crossing hazard near Mandai nature reserves; dawn fog reduction in visibility"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            103.778,
+            1.412
+          ],
+          [
+            103.811,
+            1.4085
+          ],
+          [
+            103.839,
+            1.398
+          ],
+          [
+            103.8652,
+            1.3985
+          ]
+        ]
+      }
+    }
+  ]
+}

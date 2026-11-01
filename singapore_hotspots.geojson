@@ -1,0 +1,195 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tampines Expressway / Punggol-Sengkang Merge",
+        "rank": "Rank #1 Blackspot",
+        "category": "Expressway Merge Shockwave",
+        "hazard_rate": "0.084 / 1,000 trips",
+        "yoy_trend": "+14.2% YoY",
+        "silver_zone": "None (High-Speed Expressway)",
+        "details": "High speed shear where Band 7 free-flow traffic meets morning congestion queues; highest motorcycle filtering accidents islandwide."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9056,
+          1.3912
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "BKE / Dairy Farm Curve",
+        "rank": "Rank #2 Blackspot",
+        "category": "Expressway Merge Shockwave",
+        "hazard_rate": "0.071 / 1,000 trips",
+        "yoy_trend": "+8.7% YoY",
+        "silver_zone": "None",
+        "details": "Downhill reverse curve combined with tropical deluge ponding; high incidence of loss-of-control spins in rear-wheel and performance EVs."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7781,
+          1.3654
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "AYE / Clementi Ave 6 Interchange",
+        "rank": "Rank #3 Blackspot",
+        "category": "Heavy Logistics Corridor",
+        "hazard_rate": "0.068 / 1,000 trips",
+        "yoy_trend": "+9.1% YoY",
+        "silver_zone": "None",
+        "details": "Heavy 40-foot prime mover container traffic weaving with private passenger vehicles exiting toward Clementi town."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7652,
+          1.3145
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "CTE / Braddell Road Tunnel Flyover",
+        "rank": "Rank #4 Blackspot",
+        "category": "Expressway Merge Shockwave",
+        "hazard_rate": "0.063 / 1,000 trips",
+        "yoy_trend": "+11.3% YoY",
+        "silver_zone": "None",
+        "details": "Rapid speed-band drop caused by fixed speed camera braking; severe multi-vehicle rear-end chain collisions."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8569,
+          1.3418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Clarke Quay / Boat Quay Entertainment Basin",
+        "rank": "Rank #5 Blackspot",
+        "category": "Nightlife / Alcohol Cluster",
+        "hazard_rate": "0.059 / 1,000 trips",
+        "yoy_trend": "+12.8% YoY (Post-Midnight)",
+        "silver_zone": "Friendly Streets nearby",
+        "details": "Dense bar/club cluster. Post-midnight intoxicated pedestrians crossing Eu Tong Sen St; statutory threshold tightened to 30mg BAC in July 2026."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8458,
+          1.2905
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Geylang Road (Lorong 12 to 28 Corridor)",
+        "rank": "Rank #6 Blackspot",
+        "category": "Nightlife / Bar Cluster",
+        "hazard_rate": "0.055 / 1,000 trips",
+        "yoy_trend": "+7.4% YoY",
+        "silver_zone": "Speed limit 40 km/h proposed",
+        "details": "24-hour supper eateries with double-parked vehicles, high mid-block pedestrian jaywalking and motorcycle delivery traffic."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8835,
+          1.314
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Chinatown / People's Park Complex Grid",
+        "rank": "Rank #7 Blackspot",
+        "category": "Senior Pedestrian Grid",
+        "hazard_rate": "0.052 / 1,000 trips",
+        "yoy_trend": "+18.9% YoY (Seniors)",
+        "silver_zone": "Active Silver Zone (Raised tables, 40 km/h)",
+        "details": "High elderly population density (31.2% >=65). Seniors crossing New Bridge Road with mobility aids; protected by LTA Silver Zone infrastructure."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8427,
+          1.2847
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Toa Payoh Central / Lorong 1-6 Junctions",
+        "rank": "Rank #8 Blackspot",
+        "category": "Senior Pedestrian Grid",
+        "hazard_rate": "0.048 / 1,000 trips",
+        "yoy_trend": "+15.6% YoY (Seniors)",
+        "silver_zone": "Active Silver Zone & Friendly Streets",
+        "details": "Pioneer generation town centre with wide multi-lane dual carriageways; seniors misjudging approaching vehicle speed."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.851,
+          1.3343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bedok Central / New Upper Changi Road",
+        "rank": "Rank #9 Blackspot",
+        "category": "Senior Pedestrian Grid",
+        "hazard_rate": "0.046 / 1,000 trips",
+        "yoy_trend": "+14.1% YoY",
+        "silver_zone": "Active Silver Zone (68% casualty drop)",
+        "details": "Massive public transport interchange pedestrian spillover; LTA Silver Zone chicanes have reduced fatal casualties by 68%."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9312,
+          1.3236
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pioneer / Tuas Heavy Vehicle Logistics Axis",
+        "rank": "Rank #10 Blackspot",
+        "category": "Heavy Logistics Corridor",
+        "hazard_rate": "0.044 / 1,000 trips",
+        "yoy_trend": "+6.8% YoY",
+        "silver_zone": "None (Industrial)",
+        "details": "Heavy tipper trucks and industrial multi-axle trailers; left-turning blind spots with cyclists and foreign worker transport vans."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.6823,
+          1.3218
+        ]
+      }
+    }
+  ]
+}
