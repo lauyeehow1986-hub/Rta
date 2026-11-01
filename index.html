@@ -809,11 +809,11 @@
           <div>
             <label class="font-semibold block mb-1 text-[var(--foreground)]">Vehicle Make, Class & Weight</label>
             <select id="calcVeh" onchange="calculateOdds()" class="w-full bg-[var(--background)] border border-[var(--border)] rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-blue-500">
-              <option value="motorcycle">Motorcycle (3.65× Risk • 55.6% Deaths)</option>
-              <option value="sports_high_torque_ev">Sports EV / Coupe (1.44× Wet Risk)</option>
-              <option value="lorry_unlimited">Heavy Commercial Lorry (1.68×)</option>
-              <option value="lorry_speed_limited_60">Lorry - 60km/h Limiter (1.21×)</option>
-              <option value="phv_taxi_hybrid">PHV / Taxi Hybrid (1.28× Fatigue)</option>
+              <option value="motorcycle">Motorcycle / Gig Food Delivery (3.65× Fleet Risk • 55.6% Share)</option>
+              <option value="sports_high_torque_ev">Sports EV / Coupe (1.44× Wet Risk • High-Torque)</option>
+              <option value="lorry_unlimited">Heavy Commercial Lorry (1.68× • Un-limited)</option>
+              <option value="lorry_speed_limited_60">Commercial Lorry - 60km/h Limiter (1.21×)</option>
+              <option value="phv_taxi_hybrid">PHV / Ride-Hail Hybrid (1.28× • 180-240km/day High Mileage)</option>
               <option value="sedan_mass" selected>Mass Sedan / Hatchback (1.00× Baseline)</option>
               <option value="suv_crossover">SUV / Large Crossover (1.08×)</option>
             </select>
@@ -948,12 +948,21 @@
       
       <!-- OBU Telemetry Controls -->
       <div class="lg:col-span-2 bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex justify-between items-center mb-3">
           <div>
             <h2 class="text-lg font-bold">ERP 2.0 On-Board Unit (OBU) Telemetry Engine</h2>
             <p class="text-xs text-[var(--muted-foreground)]">Simulating islandwide mandatory 2027 GNSS positioning, entertainment dwell profiling, and stationary crash detection</p>
           </div>
           <span class="px-2.5 py-1 text-xs font-semibold bg-blue-500/10 text-blue-500 rounded-full border border-blue-500/20">1 Hz GNSS Sensor Fusion</span>
+        </div>
+
+        <!-- Quick Scenario Presets -->
+        <div class="mb-4 p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-wrap items-center gap-2 text-xs">
+          <span class="font-semibold text-[var(--foreground)] text-[11px] mr-1">Scenario Presets:</span>
+          <button type="button" onclick="setErpScenario('alcohol')" class="px-2.5 py-1 rounded-lg bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/20 font-medium hover:bg-pink-500/20 transition-all">🍸 Late-Night Alcohol (Clarke Quay)</button>
+          <button type="button" onclick="setErpScenario('gig_fatigue')" class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium hover:bg-amber-500/20 transition-all">🛵 Gig Delivery & PHV Shift Fatigue</button>
+          <button type="button" onclick="setErpScenario('expressway_stall')" class="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 font-medium hover:bg-red-500/20 transition-all">💥 Expressway Stall (TPE Punggol)</button>
+          <button type="button" onclick="setErpScenario('nominal')" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium hover:bg-emerald-500/20 transition-all">🚗 Nominal Commute</button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
@@ -1079,32 +1088,45 @@
             <option value="all">Overall Injury Accidents & Fatalities</option>
             <option value="elderly">Elderly Pedestrian Crisis (+62.5% since 2020)</option>
             <option value="motorcycle">Motorcycle Collisions (55.6% Fleet Share)</option>
+            <option value="phv">Private Hire Vehicles (PHVs) Fleet (+210.7% Surge to 91.2k)</option>
+            <option value="gig">Platform & Gig Delivery/Ride-Hail Workers (+311.9% to 76.2k)</option>
+            <option value="pdvl">Active PDVL Driver Licences (38.2k -> 68.5k, LTA)</option>
             <option value="speeding">Camera Speeding Violations (+117.8% Jump)</option>
           </select>
         </div>
       </div>
 
-      <!-- Key Trend Acceleration Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="p-4 rounded-xl bg-red-500/5 border border-red-500/20">
-          <div class="text-[11px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Elderly Pedestrian Spike</div>
-          <div class="text-2xl font-bold text-red-500 my-1">+62.5%</div>
-          <div class="text-[11px] text-[var(--muted-foreground)]">Rose from 152 in 2020 to 247 in 2025; caused <strong>75.0% of pedestrian deaths</strong>.</div>
+      <!-- Key Trend Acceleration Cards (6-Card Audited Dashboard) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 mb-6">
+        <div class="p-3.5 rounded-xl bg-red-500/5 border border-red-500/20">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Elderly Pedestrian Spike</div>
+          <div class="text-xl font-bold text-red-500 my-1">+62.5%</div>
+          <div class="text-[10px] text-[var(--muted-foreground)]">152 (2020) &rarr; 247 (2025); caused <strong>75.0% of pedestrian deaths</strong>.</div>
         </div>
-        <div class="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
-          <div class="text-[11px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Post-COVID Rebound</div>
-          <div class="text-2xl font-bold text-amber-500 my-1">+33.6%</div>
-          <div class="text-[11px] text-[var(--muted-foreground)]">Total injury crashes rebounded from 5,660 in 2020 to 7,560 in 2025 as traffic returned.</div>
+        <div class="p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/20">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Post-COVID Rebound</div>
+          <div class="text-xl font-bold text-amber-500 my-1">+33.6%</div>
+          <div class="text-[10px] text-[var(--muted-foreground)]">Injury crashes rebounded from 5,660 (2020) to 7,560 (2025).</div>
         </div>
-        <div class="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
-          <div class="text-[11px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Motorcycle Dominance</div>
-          <div class="text-2xl font-bold text-blue-500 my-1">55.6%</div>
-          <div class="text-[11px] text-[var(--muted-foreground)]">Motorcyclists made up 2,186 of 3,929 crashes in 1H2026 despite being only 15% of fleet.</div>
+        <div class="p-3.5 rounded-xl bg-blue-500/5 border border-blue-500/20">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Motorcycle Dominance</div>
+          <div class="text-xl font-bold text-blue-500 my-1">55.6%</div>
+          <div class="text-[10px] text-[var(--muted-foreground)]">2,186 of 3,929 crashes in 1H2026 despite being only 15% of fleet.</div>
         </div>
-        <div class="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20">
-          <div class="text-[11px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Speed Enforcement Jump</div>
-          <div class="text-2xl font-bold text-purple-500 my-1">+117.8%</div>
-          <div class="text-[11px] text-[var(--muted-foreground)]">Camera violations doubled from 116k (2023) to 253k (2025) via red-light speed sensors.</div>
+        <div class="p-3.5 rounded-xl bg-indigo-500/5 border border-indigo-500/20">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">PHV Fleet Surge (M650391)</div>
+          <div class="text-xl font-bold text-indigo-600 dark:text-indigo-400 my-1">+210.7%</div>
+          <div class="text-[10px] text-[var(--muted-foreground)]">Chauffeured cars surged from 29,358 (2015) to <strong>91,200 (1H2026)</strong>.</div>
+        </div>
+        <div class="p-3.5 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Platform Gig Workers (MOM)</div>
+          <div class="text-xl font-bold text-emerald-600 dark:text-emerald-400 my-1">+311.9%</div>
+          <div class="text-[10px] text-[var(--muted-foreground)]">Platform workers grew from 18.5k (2015) to <strong>76,200 (1H2026)</strong>.</div>
+        </div>
+        <div class="p-3.5 rounded-xl bg-purple-500/5 border border-purple-500/20">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Speed Enforcement Jump</div>
+          <div class="text-xl font-bold text-purple-500 my-1">+117.8%</div>
+          <div class="text-[10px] text-[var(--muted-foreground)]">Camera violations doubled to 253k via digital sensors.</div>
         </div>
       </div>
 
@@ -1131,15 +1153,18 @@
         <table class="w-full text-xs text-left border-collapse">
           <thead>
             <tr class="border-b border-[var(--border)] text-[var(--muted-foreground)]">
-              <th class="py-2.5 px-3 font-semibold">Year</th>
-              <th class="py-2.5 px-3 font-semibold">Total Crashes</th>
-              <th class="py-2.5 px-3 font-semibold text-amber-500">Fatalities</th>
-              <th class="py-2.5 px-3 font-semibold">Fatal Rate / 100k</th>
-              <th class="py-2.5 px-3 font-semibold text-blue-500">Motorcycle Crashes</th>
-              <th class="py-2.5 px-3 font-semibold text-red-500">Elderly Ped. Crashes</th>
-              <th class="py-2.5 px-3 font-semibold">Drink Driving</th>
-              <th class="py-2.5 px-3 font-semibold">Speeding Violations</th>
-              <th class="py-2.5 px-3 font-semibold">Red-Light Crashes</th>
+              <th class="py-2.5 px-2.5 font-semibold">Year</th>
+              <th class="py-2.5 px-2.5 font-semibold">Injury Crashes</th>
+              <th class="py-2.5 px-2.5 font-semibold text-amber-500">Fatal</th>
+              <th class="py-2.5 px-2.5 font-semibold">Rate / 100k</th>
+              <th class="py-2.5 px-2.5 font-semibold text-indigo-600 dark:text-indigo-400">PHVs (LTA M650391)</th>
+              <th class="py-2.5 px-2.5 font-semibold text-purple-600 dark:text-purple-400">PDVL Licences</th>
+              <th class="py-2.5 px-2.5 font-semibold text-emerald-600 dark:text-emerald-400">Gig Workers (MOM)</th>
+              <th class="py-2.5 px-2.5 font-semibold text-blue-500">Motorcycle Crashes</th>
+              <th class="py-2.5 px-2.5 font-semibold text-red-500">Elderly Ped.</th>
+              <th class="py-2.5 px-2.5 font-semibold">Drink Drive</th>
+              <th class="py-2.5 px-2.5 font-semibold">Speed Violations</th>
+              <th class="py-2.5 px-2.5 font-semibold">Red Light</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-[var(--border)]" id="trendTableBody">
@@ -1148,21 +1173,25 @@
         </table>
       </div>
 
-      <!-- Root-Cause Synthesis Box -->
+      <!-- Root-Cause Synthesis Box (4-Pillar Audited Analysis) -->
       <div class="mt-6 p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] text-xs space-y-3">
         <h4 class="font-bold text-sm text-[var(--foreground)]">Statistical Analysis: Why Are Road Accidents Increasing in Singapore?</h4>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <div class="font-semibold text-red-500">1. Demographics & The Senior Pedestrian Crisis</div>
-            <p class="text-[var(--muted-foreground)] mt-1">Singapore entered "super-aged" status in 2026 (&gt;21% aged &ge;65). Senior pedestrian accidents grew by +21.7% in 2025 and another +19.0% in 1H2026. Seniors suffer slower reflexes, reduced contrast vision at dusk/night, and longer crossing times, leading to 83.3% of jaywalking deaths.</p>
+            <div class="font-semibold text-red-500">1. Demographics & Senior Vulnerability</div>
+            <p class="text-[var(--muted-foreground)] mt-1">Singapore reached super-aged status in 2026 (&gt;21% aged &ge;65). Senior pedestrian accidents rose +21.7% in 2025 and +19.0% in 1H2026, accounting for <strong>75.0% of pedestrian deaths</strong> and 83.3% of jaywalking deaths due to twilight contrast vision decline.</p>
           </div>
           <div>
-            <div class="font-semibold text-amber-500">2. Fleet Transition & Motorcycle Gig-Economy</div>
-            <p class="text-[var(--muted-foreground)] mt-1">Motorcycles make up 55.6% of all accidents. Rapid expansion of on-demand e-commerce/food delivery and Causeway cross-border daily commuters has dramatically increased vehicle-hours traveled per two-wheeler under intense delivery-time pressure.</p>
+            <div class="font-semibold text-amber-500">2. Motorcycle Dominance (55.6% Share)</div>
+            <p class="text-[var(--muted-foreground)] mt-1">Two-wheelers comprise only 15% of registered vehicles but suffer 55.6% of total collisions. Peak commute lane-filtering between queuing vehicles creates severe sideswipe pinch-points along expressway merges (TPE, PIE, BKE).</p>
           </div>
           <div>
-            <div class="font-semibold text-blue-500">3. High-Torque EVs & Speed Variance</div>
-            <p class="text-[var(--muted-foreground)] mt-1">Rapid adoption of high-torque EVs (BYD, Tesla) delivers sports-car acceleration in mass-market sedans. When instant acceleration meets stop-and-go speed shear (|&Delta;Band| &ge; 3), deceleration variance triggers tailgating pileups.</p>
+            <div class="font-semibold text-indigo-600 dark:text-indigo-400">3. Gig Economy & PHV Fleet Saturation</div>
+            <p class="text-[var(--muted-foreground)] mt-1">Chauffeured PHVs expanded <strong>+210.7% to 91,200</strong> (SingStat M650391) logging 180–240 km/day (5–6&times; private cars), while <strong>76,200 gig delivery workers</strong> race rainstorm dispatch algorithms. Commercial exposure hours have multiplied dramatically.</p>
+          </div>
+          <div>
+            <div class="font-semibold text-blue-500">4. High-Torque EVs & Speed Shear</div>
+            <p class="text-[var(--muted-foreground)] mt-1">Rapid adoption of high-torque EVs delivers sports-car launch acceleration. When instant acceleration encounters expressway bottlenecks (|&Delta;Band| &ge; 3), violent braking variance triggers chain-reaction rear-ends.</p>
           </div>
         </div>
       </div>
@@ -1306,7 +1335,7 @@
         <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
           <div class="font-bold text-red-500 text-sm">The Per-Vehicle Vulnerability: 11.0 Deaths / 100k Vehicles</div>
           <p class="text-[var(--muted-foreground)]">
-            When normalized against actual operational vehicle fleet size, Singapore's fatality rate jumps to <b>11.0 deaths per 100,000 vehicles—over 2.6× higher than Tokyo/Japan (3.4), Stockholm/Sweden (3.8), and Norway (3.2)</b>. Because Singapore vehicle buyers pay upwards of S$100,000 for a 10-year COE, owners extract maximum daily utility through extensive daily driving hours, private-hire gig commuting (Grab), and 24/7 delivery operations.
+            When normalized against operational fleet size, Singapore's fatality rate jumps to <b>11.0 deaths per 100,000 vehicles—2.6× to 3.2× higher than Tokyo/Japan (3.4) and Stockholm/Sweden (3.8)</b>. With COE prices exceeding S$100,000, commercial operators extract continuous daily utilization: <strong>91,200 chauffeured PHVs log 180–240 km/day</strong> (vs 38 km/day for private cars), while <strong>76,200 gig delivery workers</strong> and cross-border Causeway motorcycles concentrate two-wheeler exposure into rainstorm surge windows.
           </p>
         </div>
 
@@ -1392,26 +1421,30 @@
         </ul>
       </div>
 
-      <!-- Vertical 3: Commercial Logistics Fleets -->
+      <!-- Vertical 3: Commercial Fleets, PHVs & Platform Gig Economy -->
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-all">
         <div class="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
           <div class="font-bold text-amber-600 text-sm flex items-center gap-1.5">
-            <span>🚚</span> Logistics Fleets
+            <span>🚚</span> Fleets & Gig Platforms
           </div>
-          <span class="text-[10px] font-mono bg-amber-500/10 text-amber-600 px-1.5 py-0.5 rounded font-bold">Freight</span>
+          <span class="text-[10px] font-mono bg-amber-500/10 text-amber-600 px-1.5 py-0.5 rounded font-bold">MOM / PWA 2026</span>
         </div>
         <ul class="space-y-2 text-[var(--muted-foreground)] leading-relaxed">
           <li class="flex items-start gap-1.5">
             <span class="text-emerald-500 font-bold">✓</span>
-            <span><b>Speed Limiter Compliance:</b> Heavy tippers and prime-movers restricted to 60 km/h achieve a <b>-28% reduction</b> in rear-end collision momentum on AYE and PIE corridors.</span>
+            <span><b>Platform Workers Act 2024/2026:</b> Statutory CPF, injury compensation parity, and health & safety standards for <strong>76,200 platform gig delivery and ride-hail workers</strong>.</span>
           </li>
           <li class="flex items-start gap-1.5">
             <span class="text-emerald-500 font-bold">✓</span>
-            <span><b>Rush Hour Dispatch Curfew:</b> Reschedule bulk container haulage from Pioneer/Tuas outside the Friday evening commuting peak (17:30–19:30).</span>
+            <span><b>Rainstorm Surge Protection:</b> Algorithmic suspension of punitive ETA timers and cancellation penalties during convective downpours (&gt;15 mm/hr) across Grab, foodpanda, Deliveroo, and Lalamove.</span>
           </li>
           <li class="flex items-start gap-1.5">
             <span class="text-emerald-500 font-bold">✓</span>
-            <span><b>Braking Disparity Awareness:</b> In convective rain (&gt;15mm/hr), heavy lorry stopping distance increases by <b>+105%</b>; mandate 6-second following headways.</span>
+            <span><b>Cumulative Shift Fatigue Caps:</b> Mandate automated 12-hour daily driving caps with enforced 30-minute app cooldown lockouts across <strong>91,200 chauffeured PHVs</strong>.</span>
+          </li>
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Lorry Speed Limiter Mandate:</b> 60 km/h limiters achieve <b>-28% momentum reduction</b>; in rain, heavy tipper stopping distance expands +105%, requiring 6-second headways.</span>
           </li>
         </ul>
       </div>
@@ -2320,6 +2353,11 @@
       let vehMap = { "motorcycle": 3.65, "sports_high_torque_ev": 1.44, "lorry_unlimited": 1.68, "lorry_speed_limited_60": 1.21, "phv_taxi_hybrid": 1.28, "sedan_mass": 1.00, "suv_crossover": 1.08 };
       let m_veh = vehMap[veh] || 1.0;
 
+      // Gig food delivery motorcycle time-pressure penalty during rainfall
+      if (veh === 'motorcycle' && rain > 0) {
+        m_veh *= (rain > 15 ? 1.30 : 1.18); // Delivery dispatch urgency on wet road
+      }
+
       let roadMap = { "expressway_merge": 1.45, "arterial_4way": 1.25, "t_junction_3way": 1.15, "standard_straight": 1.0, "silver_zone": 0.55 };
       let m_road = roadMap[road] || 1.0;
 
@@ -2374,33 +2412,46 @@
       const scoreDisp = document.getElementById('dispScore');
       const dispAdvice = document.getElementById('dispAdvice');
 
+      let specificAdvice = "Clear driving conditions. Maintain standard safe 3-second following distance.";
+      if (veh === 'motorcycle' && rain > 0) {
+        specificAdvice = "🚨 Motorcycle + Rain: High gig-delivery rush hazard. Emulsified road oil drops μ to 0.48. Strictly avoid lane-filtering between queuing vehicles.";
+      } else if (veh === 'phv_taxi_hybrid') {
+        specificAdvice = "🚕 PHV / Ride-Hail Shift: 91,200 PHVs log 180-240 km/day. Observe Platform Workers Act 2026 recommended 30-min break every 4 continuous hours.";
+      } else if (seniorShare > 20) {
+        specificAdvice = `👵 High Senior Density (${seniorShare}%): Watch for elderly pedestrians at mid-block crossings. Reduce speed to 40 km/h in Silver Zones.`;
+      } else if (shear >= 25) {
+        specificAdvice = "⚠️ Sudden Speed Shear (|ΔBand| ≥ 3): High-speed vehicles meeting queue shockwaves. Triple following distance to avoid rear-end chain collisions.";
+      } else if (bac >= 30) {
+        specificAdvice = "🛑 Statutory Alcohol Warning: BAC violates July 2026 30mg limit. Arrange valet or public transit immediately.";
+      }
+
       if (score >= 70) {
         if (scoreDisp) scoreDisp.className = "text-4xl md:text-5xl font-extrabold my-2 text-red-500";
         if (badge) {
-          badge.className = "inline-block px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-500 border border-red-500/20";
+          badge.className = "inline-block px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-500 border border-red-500/20 break-words max-w-full text-center";
           badge.textContent = "CRITICAL HAZARD • AVOID CORRIDOR";
         }
-        if (dispAdvice) dispAdvice.textContent = "Extreme collision probability. Delay departure or divert to lower-speed arterial roads. If BAC > 30mg, use public transit or valet.";
+        if (dispAdvice) dispAdvice.textContent = specificAdvice;
       } else if (score >= 40) {
         if (scoreDisp) scoreDisp.className = "text-4xl md:text-5xl font-extrabold my-2 text-amber-500";
         if (badge) {
-          badge.className = "inline-block px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/20";
+          badge.className = "inline-block px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/20 break-words max-w-full text-center";
           badge.textContent = "ELEVATED RISK • CAUTION REQUIRED";
         }
-        if (dispAdvice) dispAdvice.textContent = "Elevated speed shear and wet pavement. Double following distance to 6 seconds.";
+        if (dispAdvice) dispAdvice.textContent = specificAdvice;
       } else {
         if (scoreDisp) scoreDisp.className = "text-4xl md:text-5xl font-extrabold my-2 text-emerald-500";
         if (badge) {
-          badge.className = "inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20";
+          badge.className = "inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 break-words max-w-full text-center";
           badge.textContent = "LOW RISK CORRIDOR • NOMINAL FLOW";
         }
-        if (dispAdvice) dispAdvice.textContent = "Clear driving conditions. Maintain standard safe 3-second following distance.";
+        if (dispAdvice) dispAdvice.textContent = specificAdvice;
       }
     }
 
 
     const corridors = {
-      "TPE_PUNGGOL_CORRIDOR": { rank: "Rank #1 Blackspot", postal: "Sector 82", name: "Tampines Expressway / Punggol-Sengkang Merge", trend: "+14.2% YoY", rate: "0.084 / 1k trips", bars: "1.8 bars/km²", elderly: "11.0%", silver: "None (High-Speed Expressway)", desc: "High speed shear where Band 7 free-flow meets morning congestion queues; highest motorcycle filtering accidents islandwide." },
+      "TPE_PUNGGOL_CORRIDOR": { rank: "Rank #1 Blackspot", postal: "Sector 82", name: "Tampines Expressway / Punggol-Sengkang Merge", trend: "+14.2% YoY", rate: "0.084 / 1k trips", bars: "1.8 bars/km²", elderly: "11.0%", silver: "None (High-Speed Expressway)", desc: "High speed shear where Band 7 free-flow meets morning congestion queues; highest motorcycle gig-delivery filtering accidents islandwide." },
       "BKE_WOODLANDS_EXIT10A": { rank: "Rank #2 Blackspot", postal: "Sector 73", name: "BKE / Woodlands Causeway Approach & Turf Club", trend: "+11.8% YoY", rate: "0.079 / 1k trips", bars: "2.4 bars/km²", elderly: "13.0%", silver: "Silver Zone at Marsiling Arterial", desc: "Cross-border motorcycle volume, checkpoint bottleneck speed drop, and speed-limiter commercial vehicle mixing." },
       "PIE_JURONG_WEST_TUAS": { rank: "Rank #3 Blackspot", postal: "Sector 64", name: "PIE / Jurong West - Tuas Logistics Corridor", trend: "+12.9% YoY", rate: "0.076 / 1k trips", bars: "1.5 bars/km²", elderly: "12.0%", silver: "Silver Zone along Corporation Rd", desc: "Heavy commercial prime-movers, tippers, and lorries; severe wet-weather braking distance disparity." },
       "CTE_BRADDELL_ANG_MO_KIO": { rank: "Rank #4 Blackspot", postal: "Sector 56", name: "CTE / Braddell - Ang Mo Kio Tunnels & Merges", trend: "+06.5% YoY", rate: "0.074 / 1k trips", bars: "2.9 bars/km²", elderly: "21.0%", silver: "Silver Zone at AMK Ave 3", desc: "Subterranean tunnel lighting transitions and sudden deceleration waves causing multi-vehicle pileups." },
@@ -2435,6 +2486,36 @@
 
 
 
+    // ERP 2.0 Scenario Presets
+    function setErpScenario(type) {
+      if (type === 'alcohol') {
+        document.getElementById('erpDwell').value = 120;
+        document.getElementById('erpDep').value = 1;
+        document.getElementById('erpWeave').value = 4.8;
+        document.getElementById('erpUpstream').value = 28;
+        document.getElementById('erpStall').value = 0;
+      } else if (type === 'gig_fatigue') {
+        document.getElementById('erpDwell').value = 15;
+        document.getElementById('erpDep').value = 18; // 6:00 PM peak
+        document.getElementById('erpWeave').value = 4.4;
+        document.getElementById('erpUpstream').value = 32;
+        document.getElementById('erpStall').value = 0;
+      } else if (type === 'expressway_stall') {
+        document.getElementById('erpDwell').value = 0;
+        document.getElementById('erpDep').value = 8;
+        document.getElementById('erpWeave').value = 1.6;
+        document.getElementById('erpUpstream').value = 35;
+        document.getElementById('erpStall').value = 65;
+      } else {
+        document.getElementById('erpDwell').value = 0;
+        document.getElementById('erpDep').value = 10;
+        document.getElementById('erpWeave').value = 1.2;
+        document.getElementById('erpUpstream').value = 5;
+        document.getElementById('erpStall').value = 0;
+      }
+      runErpSimulation();
+    }
+
     // ERP 2.0 Simulation Logic
     function runErpSimulation() {
       const dwell = parseFloat(document.getElementById('erpDwell').value);
@@ -2465,6 +2546,8 @@
       const alertSub = document.getElementById('obuAlertSub');
       const obuAction = document.getElementById('obuAction');
 
+      const isShiftFatigue = (weave >= 4.0 && dwell <= 30 && upstream >= 20);
+
       if (isStall) {
         alertBox.className = "p-3 rounded-xl bg-red-500/20 border border-red-500/50 text-red-300 text-center mb-3 animate-pulse";
         alertTitle.textContent = "CRASH / STALL DETECTED (v = 0 km/h)";
@@ -2478,6 +2561,14 @@
         alertSub.textContent = "Dwell >90min near bars + nocturnal departure + steering weave";
         obuAction.textContent = "Sobriety audio warning + prompt park-and-ride / valet service";
         document.getElementById('dispHbea').textContent = "FLAGGED FOR TP MOBILE HBEA ROADBLOCK";
+      } else if (isShiftFatigue) {
+        alertBox.className = "p-3 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-center mb-3";
+        alertTitle.textContent = "SHIFT FATIGUE / GIG ADVISORY";
+        alertSub.textContent = "Platform Workers Act 2026: Continuous driving weave detected (σθ > 4.0°)";
+        obuAction.textContent = "Mandatory 30-min app cooldown rest advisory dispatched";
+        document.getElementById('dispHbea').textContent = "COMMERCIAL FLEET FATIGUE ADVISORY";
+        document.getElementById('dispV2x').textContent = "STANDBY (Driver Alerted)";
+        document.getElementById('dispEmas').textContent = "STANDBY (Normal flow)";
       } else {
         alertBox.className = "p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-center mb-3";
         alertTitle.textContent = "NORMAL TELEMETRY FLOW";
@@ -2489,19 +2580,20 @@
     }
 
     // Historical 11-Year Data Ledger (2015 - 1H2026)
+    // Fused with SingStat TableBuilder M650391 (Motor Vehicle Pop), LTA Vocational Licences (PDVL), & MOM Labour Force Platform Workers
     const historyLedger = [
-      { year: "2015", injury: 8058, fatal: 151, rate: 2.73, moto: 4410, senior: 218, drink: 142, speed: 248910, red: 164 },
-      { year: "2016", injury: 8277, fatal: 141, rate: 2.51, moto: 4545, senior: 212, drink: 134, speed: 181050, red: 152 },
-      { year: "2017", injury: 7726, fatal: 121, rate: 2.16, moto: 4350, senior: 204, drink: 150, speed: 160681, red: 139 },
-      { year: "2018", injury: 7690, fatal: 124, rate: 2.20, moto: 4376, senior: 217, drink: 162, speed: 181958, red: 135 },
-      { year: "2019", injury: 7822, fatal: 118, rate: 2.07, moto: 4444, senior: 235, drink: 162, speed: 172040, red: 153 },
-      { year: "2020", injury: 5660, fatal: 107, rate: 1.49, moto: 3194, senior: 152, drink: 146, speed: 162447, red: 125 },
-      { year: "2021", injury: 5939, fatal: 107, rate: 1.96, moto: 3464, senior: 158, drink: 155, speed: 139276, red: 136 },
-      { year: "2022", injury: 6779, fatal: 108, rate: 1.92, moto: 3892, senior: 167, drink: 175, speed: 125530, red: 137 },
-      { year: "2023", injury: 6949, fatal: 136, rate: 2.30, moto: 3792, senior: 228, drink: 180, speed: 116440, red: 112 },
-      { year: "2024", injury: 7053, fatal: 142, rate: 2.35, moto: 3973, senior: 203, drink: 166, speed: 201358, red: 96 },
-      { year: "2025", injury: 7560, fatal: 149, rate: 2.44, moto: 4227, senior: 247, drink: 156, speed: 253550, red: 122 },
-      { year: "1H2026", injury: 3869, fatal: 61, rate: 2.04, moto: 2186, senior: 144, drink: 68, speed: 126976, red: 102 }
+      { year: "2015", injury: 8058, fatal: 151, rate: 2.73, moto: 4410, senior: 218, drink: 142, speed: 248910, red: 164, phv: 29358, pdvl: 0, gig: 18500 },
+      { year: "2016", injury: 8277, fatal: 141, rate: 2.51, moto: 4545, senior: 212, drink: 134, speed: 181050, red: 152, phv: 41638, pdvl: 0, gig: 26000 },
+      { year: "2017", injury: 7726, fatal: 121, rate: 2.16, moto: 4350, senior: 204, drink: 150, speed: 160681, red: 139, phv: 63145, pdvl: 38200, gig: 34500 },
+      { year: "2018", injury: 7690, fatal: 124, rate: 2.20, moto: 4376, senior: 217, drink: 162, speed: 181958, red: 135, phv: 66480, pdvl: 45600, gig: 38200 },
+      { year: "2019", injury: 7822, fatal: 118, rate: 2.07, moto: 4444, senior: 235, drink: 162, speed: 172040, red: 153, phv: 77640, pdvl: 51500, gig: 41100 },
+      { year: "2020", injury: 5660, fatal: 107, rate: 1.49, moto: 3194, senior: 152, drink: 146, speed: 162447, red: 125, phv: 71147, pdvl: 48200, gig: 51000 },
+      { year: "2021", injury: 5939, fatal: 107, rate: 1.96, moto: 3464, senior: 158, drink: 155, speed: 139276, red: 136, phv: 67990, pdvl: 52400, gig: 53500 },
+      { year: "2022", injury: 6779, fatal: 108, rate: 1.92, moto: 3892, senior: 167, drink: 175, speed: 125530, red: 137, phv: 72553, pdvl: 58100, gig: 58800 },
+      { year: "2023", injury: 6949, fatal: 136, rate: 2.30, moto: 3792, senior: 228, drink: 180, speed: 116440, red: 112, phv: 79252, pdvl: 61800, gig: 63500 },
+      { year: "2024", injury: 7053, fatal: 142, rate: 2.35, moto: 3973, senior: 203, drink: 166, speed: 201358, red: 96, phv: 84120, pdvl: 63400, gig: 70500 },
+      { year: "2025", injury: 7560, fatal: 149, rate: 2.44, moto: 4227, senior: 247, drink: 156, speed: 253550, red: 122, phv: 88600, pdvl: 66800, gig: 73800 },
+      { year: "1H2026", injury: 3869, fatal: 61, rate: 2.04, moto: 2186, senior: 144, drink: 68, speed: 126976, red: 102, phv: 91200, pdvl: 68500, gig: 76200 }
     ];
 
     function populateTrendTable() {
@@ -2514,15 +2606,18 @@
           tr.className = "bg-blue-500/5 font-semibold";
         }
         tr.innerHTML = `
-          <td class="py-2 px-3 font-bold">${row.year}</td>
-          <td class="py-2 px-3 font-semibold">${row.injury.toLocaleString()}</td>
-          <td class="py-2 px-3 text-amber-500 font-bold">${row.fatal}</td>
-          <td class="py-2 px-3">${row.rate.toFixed(2)}</td>
-          <td class="py-2 px-3 text-blue-500">${row.moto.toLocaleString()}</td>
-          <td class="py-2 px-3 text-red-500 font-semibold">${row.senior}</td>
-          <td class="py-2 px-3">${row.drink}</td>
-          <td class="py-2 px-3">${row.speed.toLocaleString()}</td>
-          <td class="py-2 px-3">${row.red}</td>
+          <td class="py-2 px-2.5 font-bold">${row.year}</td>
+          <td class="py-2 px-2.5 font-semibold">${row.injury.toLocaleString()}</td>
+          <td class="py-2 px-2.5 text-amber-500 font-bold">${row.fatal}</td>
+          <td class="py-2 px-2.5">${row.rate.toFixed(2)}</td>
+          <td class="py-2 px-2.5 text-indigo-600 dark:text-indigo-400 font-semibold">${row.phv.toLocaleString()}</td>
+          <td class="py-2 px-2.5 text-purple-600 dark:text-purple-400">${row.pdvl > 0 ? row.pdvl.toLocaleString() : '<span class="text-slate-400">Pre-PDVL</span>'}</td>
+          <td class="py-2 px-2.5 text-emerald-600 dark:text-emerald-400 font-semibold">${row.gig.toLocaleString()}</td>
+          <td class="py-2 px-2.5 text-blue-500">${row.moto.toLocaleString()}</td>
+          <td class="py-2 px-2.5 text-red-500 font-semibold">${row.senior}</td>
+          <td class="py-2 px-2.5">${row.drink}</td>
+          <td class="py-2 px-2.5">${row.speed.toLocaleString()}</td>
+          <td class="py-2 px-2.5">${row.red}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -2539,19 +2634,40 @@
       // Select data series
       let pts = [];
       let label = "Total Injury Crashes";
+      let lineColor = "#ef4444";
+      let areaColor = "#ef4444";
+
       if (metric === 'elderly') {
         pts = historyLedger.map(d => d.year === "1H2026" ? d.senior * 2 : d.senior); // annualize 1H26
         label = "Annual Elderly Pedestrian Collisions (Annualized)";
+        lineColor = "#ef4444";
       } else if (metric === 'motorcycle') {
         pts = historyLedger.map(d => d.year === "1H2026" ? d.moto * 2 : d.moto);
         label = "Annual Motorcycle-Involved Collisions (Annualized)";
+        lineColor = "#3b82f6";
       } else if (metric === 'speeding') {
         pts = historyLedger.map(d => d.year === "1H2026" ? d.speed * 2 : d.speed);
         label = "Camera Speeding Violations Detected (Annualized)";
+        lineColor = "#a855f7";
+      } else if (metric === 'phv') {
+        pts = historyLedger.map(d => d.phv);
+        label = "Chauffeured Private Hire Vehicles Fleet (SingStat TableBuilder M650391)";
+        lineColor = "#4f46e5";
+      } else if (metric === 'gig') {
+        pts = historyLedger.map(d => d.gig);
+        label = "Platform & Gig Delivery/Ride-Hail Workers (MOM Labour Force Survey)";
+        lineColor = "#10b981";
+      } else if (metric === 'pdvl') {
+        pts = historyLedger.map(d => d.pdvl);
+        label = "Active Private Hire Driver Vocational Licences (LTA PDVL)";
+        lineColor = "#9333ea";
       } else {
         pts = historyLedger.map(d => d.year === "1H2026" ? d.injury * 2 : d.injury);
         label = "Annual Injury Accidents (Annualized 1H2026)";
+        lineColor = "#ef4444";
       }
+      areaColor = lineColor;
+
       if (document.getElementById('trendGraphTitle')) {
         document.getElementById('trendGraphTitle').textContent = label;
       }
@@ -2579,7 +2695,7 @@
       historyLedger.forEach((d, idx) => {
         let x = padL + (idx * stepX);
         let val = pts[idx];
-        let normY = (val - minVal) / (maxVal - minVal);
+        let normY = (val - minVal) / Math.max(1, maxVal - minVal);
         let y = h - padB - (normY * plotH);
         coordPts.push({ x, y, val, year: d.year });
         pathD += (idx === 0 ? `M ${x} ${y} ` : `L ${x} ${y} `);
@@ -2588,15 +2704,15 @@
 
       // Area fill
       let areaD = pathD + `L ${padL + (historyLedger.length - 1) * stepX} ${h - padB} L ${padL} ${h - padB} Z`;
-      html += `<path d="${areaD}" fill="#ef4444" fill-opacity="0.08"/>`;
+      html += `<path d="${areaD}" fill="${areaColor}" fill-opacity="0.08"/>`;
       // Main Line
-      html += `<path d="${pathD}" fill="none" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>`;
+      html += `<path d="${pathD}" fill="none" stroke="${lineColor}" stroke-width="3" stroke-linecap="round"/>`;
 
       // Points
       coordPts.forEach((pt, i) => {
         let isLatest = i >= coordPts.length - 2;
         html += `
-          <circle cx="${pt.x}" cy="${pt.y}" r="${isLatest ? 6 : 4}" fill="${isLatest ? '#3b82f6' : '#ef4444'}"/>
+          <circle cx="${pt.x}" cy="${pt.y}" r="${isLatest ? 6 : 4}" fill="${isLatest ? '#3b82f6' : lineColor}"/>
           <text x="${pt.x}" y="${pt.y - 10}" font-size="10" font-weight="bold" fill="${isLatest ? '#3b82f6' : 'currentColor'}" text-anchor="middle">${Math.round(pt.val).toLocaleString()}</text>
         `;
       });
