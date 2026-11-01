@@ -326,13 +326,14 @@ def create_folium_map(output_path="singapore_accident_risk_gis.html"):
         zoom_start=12,
         min_zoom=11,
         max_zoom=18,
-        tiles="CartoDB positron",
+        tiles="OpenStreetMap",
         control_scale=True
     )
 
     # Add alternative high-contrast dark tile layer
     folium.TileLayer(
-        "CartoDB dark_matter",
+        tiles="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        attr="&copy; OpenStreetMap, &copy; CARTO",
         name="Dark Mode (Night Telemetry)"
     ).add_to(sg_map)
 
