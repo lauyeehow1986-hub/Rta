@@ -1,0 +1,60 @@
+{
+  "mcpServers": {
+    "sg-road-accident-risk-engine": {
+      "command": "C:/Python314/python.exe",
+      "args": [
+        "c:/Users/lauye/Downloads/rta/skills/sg-road-accident-risk-engine/scripts/mcp_server.py"
+      ],
+      "env": {
+        "PYTHONUTF8": "1",
+        "PYTHONUNBUFFERED": "1",
+        "LTA_DATAMALL_API_KEY": "YOUR_LTA_DATAMALL_KEY",
+        "ONEMAP_API_TOKEN": "YOUR_SLA_ONEMAP_JWT_TOKEN",
+        "GOOGLE_MAPS_API_KEY": "YOUR_GOOGLE_ROUTES_KEY"
+      }
+    },
+    "singstat-traffic-verifier": {
+      "command": "C:/Python314/python.exe",
+      "args": [
+        "c:/Users/lauye/Downloads/rta/skills/sg-road-accident-risk-engine/scripts/singstat_verifier_mcp.py"
+      ],
+      "env": {
+        "PYTHONUTF8": "1",
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "sg-news-accident-corroborator": {
+      "command": "C:/Python314/python.exe",
+      "args": [
+        "c:/Users/lauye/Downloads/rta/skills/sg-road-accident-risk-engine/scripts/sg_news_corroborator_mcp.py"
+      ],
+      "env": {
+        "PYTHONUTF8": "1",
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "datacommons-road-safety-benchmark": {
+      "command": "C:/Python314/python.exe",
+      "args": [
+        "c:/Users/lauye/Downloads/rta/skills/sg-road-accident-risk-engine/scripts/datacommons_benchmark_mcp.py"
+      ],
+      "env": {
+        "PYTHONUTF8": "1",
+        "PYTHONUNBUFFERED": "1",
+        "DC_API_KEY": "YOUR_DATACOMMONS_API_KEY"
+      }
+    },
+    "google-datacommons-official": {
+      "command": "uvx",
+      "args": [
+        "datacommons-mcp",
+        "serve",
+        "stdio"
+      ],
+      "env": {
+        "DC_API_KEY": "YOUR_DATACOMMONS_API_KEY",
+        "DC_SEARCH_SCOPE": "base_only"
+      }
+    }
+  }
+}

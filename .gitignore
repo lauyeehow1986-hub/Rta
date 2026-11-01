@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.DS_Store
+model_state.json
+scratch/
+test*.txt
+commit_and_push.ps1
