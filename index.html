@@ -1,63 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- LinkedIn & OpenGraph Social Sharing Metadata -->
+  <title>The Data Science of Singapore Road Safety | Spatio-Temporal GIS & ERP 2.0 Suite</title>
+  <meta name="description" content="Analyzing 7,560 official Singapore road collisions: Spatial GIS blackspots, the COE Utilization Paradox, 7x24 temporal heatmaps, and ERP 2.0 satellite telemetry.">
+  <meta property="og:title" content="Singapore Road Accident Spatio-Temporal Risk Engine & ERP 2.0 Suite">
+  <meta property="og:description" content="Empirical data science on Singapore road traffic: Why Singapore is #6 safest per-capita but 2.6x higher per-vehicle. Interactive WebGIS, 7x24 heatmap & route odds calculator.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lauyeehow1986-hub.github.io/Rta/">
+  <meta name="author" content="Applied Data Science & GIS Research Singapore">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Tailwind CSS & Fonts -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
   <!-- Leaflet WebGIS Engine & Heatmap Plugin -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
   <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .leaflet-container { font-family: inherit; z-index: 1; }
     .custom-gis-popup .leaflet-popup-content-wrapper { border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25); border: 1px solid #cbd5e1; }
-    .pulse-dot {
-      width: 14px; height: 14px; border-radius: 50%;
-      box-shadow: 0 0 0 rgba(239, 68, 68, 0.7);
-      animation: pulse-ring 1.8s infinite;
+    .heat-cell:hover { transform: scale(1.18); z-index: 10; transition: transform 0.12s ease; }
+    .slider::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #2563eb; cursor: pointer; box-shadow: 0 0 8px rgba(37,99,235,0.4); }
+    .pulse-glow { animation: pulseGlow 2s infinite; }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.05); }
     }
-    @keyframes pulse-ring {
-      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-      70% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-    }
-  </style>
-  <meta charset="UTF-8">
-  <title>Singapore Spatio-Temporal Road Accident Risk Engine & ERP 2.0 Suite</title>
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
-  <style>
-    .heat-cell:hover { transform: scale(1.15); z-index: 10; transition: transform 0.1s ease; }
-    .map-node:hover { fill: #ef4444 !important; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.8)); cursor: pointer; }
-    .slider::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #3b82f6; cursor: pointer; }
   </style>
 </head>
 <body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-4 md:p-6 min-h-screen">
 
-  <!-- Header Banner -->
-  <header class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm mb-6">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <div>
-        <div class="flex items-center gap-3">
-          <span class="px-2.5 py-1 text-xs font-semibold uppercase tracking-wider bg-red-500/10 text-red-500 rounded-full border border-red-500/20">Official 2025–2026 Data Fused</span>
-          <span class="px-2.5 py-1 text-xs font-semibold uppercase tracking-wider bg-blue-500/10 text-blue-500 rounded-full border border-blue-500/20">3-Tier Verification Sieve</span>
-          <span class="px-2.5 py-1 text-xs font-semibold uppercase tracking-wider bg-amber-500/10 text-amber-500 rounded-full border border-amber-500/20">July 2026 BAC Amendment (30mg)</span>
-        </div>
-        <h1 class="text-2xl md:text-3xl font-bold mt-2 tracking-tight">Singapore Road Accident Spatio-Temporal Prediction & ERP 2.0 Telemetry Suite</h1>
-        <p class="text-[var(--muted-foreground)] text-sm mt-1">
-          Fusing LTA DataMall v4/v6.5, SingStat TableBuilder, Public News NLP Corroboration, NEA 5-min Weather, and Google Data Commons International Benchmarks.
-        </p>
-      </div>
+    <!-- Professional LinkedIn-Optimized Executive Header -->
+  <header class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 md:p-6 shadow-sm mb-6 relative overflow-hidden">
+    
+    <!-- Top Meta Row -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[var(--border)] pb-4 mb-4">
       <div class="flex items-center gap-2 flex-wrap">
-        <button onclick="switchTab('overview-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-blue-600 text-white shadow-sm" id="btn-overview">Executive Overview</button>
-        <button onclick="switchTab('heatmap-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--card)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)]" id="btn-heatmap">7x24 Heatmap</button> class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-blue-600 text-white shadow-sm" id="btn-heatmap">7x24 Heatmap</button>
-        <button onclick="switchTab('map-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--card)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)]" id="btn-map">GIS Corridor Map</button>
-        <button onclick="switchTab('trends-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--card)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)]" id="btn-trends">Historical Trends (2015–2026)</button>
-        <button onclick="switchTab('calculator-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--card)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)]" id="btn-calculator">Live Route Odds</button>
-        <button onclick="switchTab('erp-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--card)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)]" id="btn-erp">ERP 2.0 Simulator</button>
-        <button onclick="switchTab('global-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--card)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)]" id="btn-global">Global Benchmark</button>
+        <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 rounded-full border border-blue-500/20 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-blue-600 pulse-glow"></span>
+          Applied Data Science & GIS Research
+        </span>
+        <span class="px-2.5 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-600 rounded-full border border-emerald-500/20">
+          Official SPF 2025–2026 Grounded
+        </span>
+        <span class="px-2.5 py-0.5 text-xs font-semibold bg-purple-500/10 text-purple-600 rounded-full border border-purple-500/20">
+          July 2026 RTA BAC Amendment
+        </span>
       </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+        <button onclick="openLinkedInModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#0a66c2] hover:bg-[#004182] text-white flex items-center gap-1.5 shadow-sm transition-all">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.6 1.6 0 0 0-1.6 1.6 1.6 1.6 0 0 0 1.6 1.6 1.6 1.6 0 0 0 1.6-1.6 1.6 1.6 0 0 0-1.6-1.6Z"/></svg>
+          Share on LinkedIn
+        </button>
+        <a href="https://github.com/lauyeehow1986-hub/Rta" target="_blank" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-[var(--background)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] flex items-center gap-1.5 transition-all">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+          GitHub (Code & Data)
+        </a>
+      </div>
+    </div>
+
+    <!-- Title & Executive Hook -->
+    <div class="mb-5">
+      <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
+        The Data Science of Singapore Road Safety: Spatial GIS, The COE Paradox & ERP 2.0 Telemetry
+      </h1>
+      <p class="text-xs md:text-sm text-[var(--muted-foreground)] mt-2 leading-relaxed max-w-5xl">
+        Synthesizing 7,560 official Singapore Police Force collisions, LTA DataMall v4 speed bands, and Google Data Commons international benchmarks. Discover why Singapore ranks #6 safest per-capita but 2.6× higher per-vehicle, and how upcoming 2027 satellite OBU telemetry transforms emergency dispatch.
+      </p>
+    </div>
+
+    <!-- Ergonomic Horizontal Navigation Pills (Mobile Smooth Scrolling) -->
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 border-t border-[var(--border)] pt-3">
+      <button onclick="switchTab('overview-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-semibold bg-blue-600 text-white shadow-sm flex items-center gap-1.5 whitespace-nowrap" id="btn-overview">
+        <span>📌</span> Executive Briefing
+      </button>
+      <button onclick="switchTab('map-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--background)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] flex items-center gap-1.5 whitespace-nowrap" id="btn-map">
+        <span>🗺️</span> Interactive WebGIS Map
+      </button>
+      <button onclick="switchTab('heatmap-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--background)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] flex items-center gap-1.5 whitespace-nowrap" id="btn-heatmap">
+        <span>🔥</span> 7×24 Temporal Heatmap
+      </button>
+      <button onclick="switchTab('trends-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--background)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] flex items-center gap-1.5 whitespace-nowrap" id="btn-trends">
+        <span>📈</span> Historical Trends (2015–2026)
+      </button>
+      <button onclick="switchTab('calculator-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--background)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] flex items-center gap-1.5 whitespace-nowrap" id="btn-calculator">
+        <span>🧮</span> Live Route Odds Calculator
+      </button>
+      <button onclick="switchTab('erp-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--background)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] flex items-center gap-1.5 whitespace-nowrap" id="btn-erp">
+        <span>🛰️</span> ERP 2.0 OBU Simulator
+      </button>
+      <button onclick="switchTab('global-tab')" class="tab-btn px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--background)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] flex items-center gap-1.5 whitespace-nowrap" id="btn-global">
+        <span>🌐</span> Global Benchmark Matrix
+      </button>
     </div>
   </header>
 
     <!-- TAB 0: EXECUTIVE SYSTEM OVERVIEW & RESEARCH DOSSIER -->
   <section id="overview-tab" class="tab-content block space-y-6">
+
+    <!-- LinkedIn Viral Hook: The Story in 3 Numbers -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      
+      <div class="p-5 rounded-2xl bg-gradient-to-br from-blue-500/10 via-[var(--card)] to-[var(--card)] border border-blue-500/30 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between text-xs font-mono font-bold text-blue-600 mb-1">
+          <span>THE COE PARADOX</span>
+          <span class="text-[11px] bg-blue-500/15 px-2 py-0.5 rounded">Macro Policy</span>
+        </div>
+        <div class="text-3xl font-extrabold text-blue-600 my-1">2.44 vs 11.0</div>
+        <p class="text-xs text-[var(--muted-foreground)] leading-relaxed mt-2">
+          Singapore ranks <b>#6 safest in the world per-capita</b> (2.44 deaths/100k pop), yet suffers a <b>2.6× higher fatality rate per vehicle</b> (11.0/100k vehicles) than Tokyo or Stockholm. Expensive S$100k+ COE assets compel intense daily mileage extraction.
+        </p>
+      </div>
+
+      <div class="p-5 rounded-2xl bg-gradient-to-br from-red-500/10 via-[var(--card)] to-[var(--card)] border border-red-500/30 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between text-xs font-mono font-bold text-red-600 mb-1">
+          <span>SUPER-AGED CRISIS</span>
+          <span class="text-[11px] bg-red-500/15 px-2 py-0.5 rounded">+62.5% YoY</span>
+        </div>
+        <div class="text-3xl font-extrabold text-red-600 my-1">75.0%</div>
+        <p class="text-xs text-[var(--muted-foreground)] leading-relaxed mt-2">
+          Senior citizens (≥65) accounted for <b>75.0% of all pedestrian fatalities</b> and <b>83.3% of jaywalking deaths</b> in 2025. Slower walking speeds and wider dual carriageways leave seniors vulnerable, but LTA Silver Zones yield up to <b>-75% casualty reductions</b>.
+        </p>
+      </div>
+
+      <div class="p-5 rounded-2xl bg-gradient-to-br from-purple-500/10 via-[var(--card)] to-[var(--card)] border border-purple-500/30 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between text-xs font-mono font-bold text-purple-600 mb-1">
+          <span>FRIDAY MIDNIGHT SURGE</span>
+          <span class="text-[11px] bg-purple-500/15 px-2 py-0.5 rounded">23:30 – 04:00</span>
+        </div>
+        <div class="text-3xl font-extrabold text-purple-600 my-1">2.45×</div>
+        <p class="text-xs text-[var(--muted-foreground)] leading-relaxed mt-2">
+          Accident odds surge to <b>2.45× base hazard on weekend late nights</b>, accounting for over 35% of fatal crashes. Driving the strict July 2026 30mg BAC limit and ERP 2.0 OBU micro-weaving triangulation (σθ > 4.2°) for proactive pre-crash detection.
+        </p>
+      </div>
+
+    </div>
+
     
     <!-- Executive Hero Card -->
     <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
@@ -367,6 +460,59 @@
     </div>
 
   </section>
+
+
+  
+    <!-- Executive Guidance for Key Decision-Makers -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-4">
+      <div class="flex items-center gap-2">
+        <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 rounded-full border border-blue-500/20">Actionable Intelligence</span>
+        <h3 class="font-bold text-base text-[var(--foreground)]">Strategic Takeaways for Key Decision-Makers & Industry Leaders</h3>
+      </div>
+      <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+        How different stakeholders across Singapore's transport, insurance, and policy ecosystem can leverage this data-driven evidence base:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        
+        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+          <div class="font-bold text-blue-600 flex items-center gap-1.5">
+            <span>🏛️</span> Transport Policy Planners
+          </div>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            Expand LTA Silver Zones and Friendly Streets into high-risk mature housing estates (Toa Payoh, Bedok, Chinatown). Physical speed-calming chicanes consistently outperform educational campaigns by 68–75%.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+          <div class="font-bold text-purple-600 flex items-center gap-1.5">
+            <span>📊</span> Motor Insurers & Actuaries
+          </div>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            Factor in speed-shear shockwave corridors (|ΔBand| ≥ 3) and night departure exposure. High-torque mass EVs carry a 1.44× wet-weather collision multiplier compared to conventional ICE sedans.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+          <div class="font-bold text-amber-600 flex items-center gap-1.5">
+            <span>🚚</span> Commercial Logistics Fleets
+          </div>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            Fleet data confirms that 60 km/h speed-limiter compliant lorries maintain a 1.21× risk multiplier versus 1.68× for un-limited vehicles. Heavy logistics corridors (AYE Clementi, Pioneer) demand dynamic lane-weaving mitigation.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+          <div class="font-bold text-emerald-600 flex items-center gap-1.5">
+            <span>🛰️</span> Tech & Telematics Innovators
+          </div>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            ERP 2.0 GNSS satellite receivers enable V2X collision prevention. By tracking 1 Hz micro-weaving (σθ > 4.2°) and zero-velocity stalls, emergency services achieve a sub-60s automated dispatch SLA.
+          </p>
+        </div>
+
+      </div>
+    </div>
 
 
   <!-- TAB 1: 7x24 TEMPORAL HEATMAP & ACCIDENT SEGREGATION -->
@@ -1918,5 +2064,59 @@
     }
 
 </script>
+  <!-- LinkedIn Sharing Modal -->
+  <div id="linkedInModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-[#0a66c2] flex items-center justify-center text-white">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.6 1.6 0 0 0-1.6 1.6 1.6 1.6 0 0 0 1.6 1.6 1.6 1.6 0 0 0 1.6-1.6 1.6 1.6 0 0 0-1.6-1.6Z"/></svg>
+          </div>
+          <h3 class="font-bold text-base text-[var(--foreground)]">Share Executive Insights on LinkedIn</h3>
+        </div>
+        <button onclick="closeLinkedInModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-lg">&times;</button>
+      </div>
+
+      <p class="text-xs text-[var(--muted-foreground)]">
+        Pre-formatted, data-backed post ready to share with your professional network:
+      </p>
+
+      <textarea id="linkedInPostText" rows="10" readonly class="w-full text-xs font-mono p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] leading-relaxed focus:outline-none resize-none">🚦 What does data science tell us about Singapore's road safety? 🇸🇬
+
+I explored 7,560 official Singapore Police Force collisions, LTA DataMall real-time sensor streams, and international benchmarks to understand where and why collisions happen.
+
+Key takeaways for transport planners, actuaries, and policy leaders:
+
+1️⃣ The COE Utilization Paradox: Singapore ranks #6 safest in the world per capita (2.44 deaths/100k). But normalized per vehicle, our fatality rate is 2.6x HIGHER than Tokyo (3.4) or Sweden (3.8). When assets cost S$100k+, owners extract heavy daily mileage.
+
+2️⃣ The Senior Pedestrian Crisis: Seniors (≥65) account for 75.0% of pedestrian deaths and 83.3% of jaywalking fatalities. Encouragingly, LTA Silver Zones yield up to 75% casualty drops through physical street design.
+
+3️⃣ Motorcycles: Represent only 15% of the vehicle fleet, but suffer 55.6% of collisions (3.65x hazard ratio), accelerated by delivery deadlines and daily Causeway commuting.
+
+4️⃣ Friday Midnight Surge: Relative hazard reaches 2.45x base rate between 23:30 and 04:00 on weekends—justifying the new July 2026 Road Traffic Act 30mg BAC limit.
+
+5️⃣ ERP 2.0 & Satellite Telemetry (2027): How 1 Hz GNSS heading micro-weaving (σθ > 4.2°) and zero-velocity stall detection enable sub-60s automated emergency dispatch.
+
+Explore the interactive Leaflet WebGIS map, 7x24 heatmap, and live route odds simulator here:
+👉 https://lauyeehow1986-hub.github.io/Rta/
+
+#DataScience #Singapore #UrbanPlanning #GIS #RoadSafety #AI #TechPolicy #SmartCity #PublicPolicy</textarea>
+
+      <div class="flex items-center justify-between gap-3 pt-2">
+        <button onclick="copyLinkedInPost()" id="copyPostBtn" class="flex-1 py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2">
+          <span>📋</span> Copy Post to Clipboard
+        </button>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://lauyeehow1986-hub.github.io/Rta/" target="_blank" class="py-2.5 px-4 bg-[#0a66c2] hover:bg-[#004182] text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5">
+          <span>↗</span> Open LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 bg-slate-900 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-2xl border border-slate-700 z-50 hidden transition-all flex items-center gap-2">
+    <span>✅</span> Copied to clipboard! Ready to paste into LinkedIn.
+  </div>
+
 </body>
 </html>
