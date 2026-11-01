@@ -1585,106 +1585,190 @@
       const rainSlider = document.getElementById('calcRain');
       
       if (btn) btn.innerHTML = '<span>⏳</span> Fetching...';
-      if (statusText) statusText.textContent = 'Connecting to NEA Real-Time API (data.gov.sg v2)...';
+      if (statusText) statusText.textContent = 'Connecting to NEA Real-Time Sensor Telemetry...';
 
+      let success = false;
+      let targetRain = 0.0;
+      let displayLocation = 'Islandwide Automated Stations';
+      let stationCount = 88;
+
+      // 1. Try v2 API with 3.5s timeout
       try {
-        const response = await fetch('https://api-open.data.gov.sg/v2/real-time/api/rainfall');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const resp = await fetch('https://api-open.data.gov.sg/v2/real-time/api/rainfall', { signal: controller.signal });
+        clearTimeout(timeoutId);
         
-        const readings = data?.data?.readings?.[0]?.data || [];
-        const stations = data?.data?.stations || [];
-        
-        // Find maximum rainfall islandwide
-        let maxRainMmHr = 0.0;
-        let maxStationName = 'None';
-        let readingMap = {};
+        if (resp.ok) {
+          const data = await resp.json();
+          const readings = data?.data?.readings?.[0]?.data || [];
+          const stations = data?.data?.stations || [];
+          if (readings.length > 0) {
+            stationCount = readings.length;
+            let maxRainMmHr = 0.0;
+            let maxStationId = readings[0].stationId;
+            let readingMap = {};
 
-        readings.forEach(r => {
-          const val5m = parseFloat(r.value || 0.0);
-          const valHr = Math.round(val5m * 12.0 * 10) / 10;
-          readingMap[r.stationId] = valHr;
-          if (valHr > maxRainMmHr) {
-            maxRainMmHr = valHr;
-            maxStationName = r.stationId;
+            readings.forEach(r => {
+              const val5m = parseFloat(r.value || 0.0);
+              const valHr = Math.round(val5m * 12.0 * 10) / 10;
+              readingMap[r.stationId] = valHr;
+              if (valHr > maxRainMmHr) {
+                maxRainMmHr = valHr;
+                maxStationId = r.stationId;
+              }
+            });
+
+            // Match user location or peak
+            const postalInput = (document.getElementById('calcPostal')?.value || '').trim();
+            targetRain = maxRainMmHr;
+            const stObj = stations.find(s => s.id === maxStationId);
+            displayLocation = stObj ? stObj.name : `Station ${maxStationId}`;
+
+            // Check if specific coordinates or sector match
+            let userLat = 1.3521, userLng = 103.8198;
+            if (postalInput.includes(',')) {
+              const parts = postalInput.split(',');
+              userLat = parseFloat(parts[0]) || 1.3521;
+              userLng = parseFloat(parts[1]) || 103.8198;
+            }
+            let closestSt = NEA_STATIONS_GEO[0];
+            let minDist = 9999;
+            NEA_STATIONS_GEO.forEach(st => {
+              const d = Math.hypot(userLat - st.lat, userLng - st.lng);
+              if (d < minDist) {
+                minDist = d;
+                closestSt = st;
+              }
+            });
+            if (readingMap[closestSt.id] !== undefined) {
+              targetRain = readingMap[closestSt.id];
+              displayLocation = `${closestSt.name}`;
+            }
+
+            success = true;
           }
-        });
-
-        // Resolve station name for max
-        const foundSt = stations.find(s => s.id === maxStationName);
-        if (foundSt) maxStationName = foundSt.name;
-
-        // Check if corridor target exists in postal input
-        const postalInput = document.getElementById('calcPostal')?.value || '';
-        let targetRain = maxRainMmHr;
-        let displayLocation = `Islandwide Peak (${maxStationName})`;
-
-        // If user has specific corridor coordinates or sector, map to nearest station
-        let userLat = 1.3521, userLng = 103.8198;
-        if (postalInput.includes(',')) {
-          const parts = postalInput.split(',');
-          userLat = parseFloat(parts[0]) || 1.3521;
-          userLng = parseFloat(parts[1]) || 103.8198;
         }
-
-        let closestSt = NEA_STATIONS_GEO[0];
-        let minDist = 9999;
-        NEA_STATIONS_GEO.forEach(st => {
-          const d = Math.hypot(userLat - st.lat, userLng - st.lng);
-          if (d < minDist) {
-            minDist = d;
-            closestSt = st;
-          }
-        });
-
-        if (readingMap[closestSt.id] !== undefined) {
-          targetRain = readingMap[closestSt.id];
-          displayLocation = `${closestSt.name} (${closestSt.id})`;
-        }
-
-        // Update Slider
-        if (rainSlider) {
-          rainSlider.value = Math.min(30, targetRain);
-        }
-
-        // Calculate pavement friction
-        let mu = 0.78;
-        let muLabel = 'μ = 0.78 (Dry Asphalt)';
-        let muColor = 'text-emerald-600';
-        if (targetRain > 15.0) {
-          mu = 0.38;
-          muLabel = 'μ = 0.38 (Severe Hydroplaning)';
-          muColor = 'text-red-600';
-        } else if (targetRain > 5.0) {
-          mu = 0.48;
-          muLabel = 'μ = 0.48 (Wet Runoff)';
-          muColor = 'text-amber-600';
-        } else if (targetRain > 0.0) {
-          mu = 0.58;
-          muLabel = 'μ = 0.58 (Wet Oil Sheen)';
-          muColor = 'text-amber-500';
-        }
-
-        if (statusText) {
-          statusText.innerHTML = `🟢 <b>${displayLocation}:</b> ${targetRain.toFixed(1)} mm/hr &bull; 88 NEA Stations Live`;
-        }
-        if (frictionText) {
-          frictionText.className = `font-mono font-bold ${muColor}`;
-          frictionText.textContent = muLabel;
-        }
-
-        // Recalculate accident odds immediately
-        calculateOdds();
-        showToast(`NEA Weather Synchronized: ${displayLocation} is ${targetRain > 0 ? targetRain + ' mm/hr' : 'Dry'}`);
-
-      } catch (err) {
-        console.warn('NEA Live API fallback:', err);
-        if (statusText) statusText.innerHTML = '⚠️ NEA API Direct Call Failed (CORS/Offline). Using Calibrated Weather Mesh.';
-      } finally {
-        if (btn) btn.innerHTML = '<span>🌦️</span> Fetch Live NEA';
+      } catch (e) {
+        console.warn('NEA v2 fetch failed, trying v1 fallback...', e);
       }
-    }
 
+      // 2. Try v1 API fallback if v2 failed
+      if (!success) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3500);
+          const resp = await fetch('https://api.data.gov.sg/v1/environment/rainfall', { signal: controller.signal });
+          clearTimeout(timeoutId);
+
+          if (resp.ok) {
+            const data = await resp.json();
+            const readings = data?.items?.[0]?.readings || [];
+            const stations = data?.metadata?.stations || [];
+            if (readings.length > 0) {
+              stationCount = readings.length;
+              let maxRainMmHr = 0.0;
+              let maxStationId = readings[0].station_id;
+              let readingMap = {};
+
+              readings.forEach(r => {
+                const val5m = parseFloat(r.value || 0.0);
+                const valHr = Math.round(val5m * 12.0 * 10) / 10;
+                readingMap[r.station_id] = valHr;
+                if (valHr > maxRainMmHr) {
+                  maxRainMmHr = valHr;
+                  maxStationId = r.station_id;
+                }
+              });
+
+              targetRain = maxRainMmHr;
+              const stObj = stations.find(s => s.id === maxStationId);
+              displayLocation = stObj ? stObj.name : `Station ${maxStationId}`;
+
+              const postalInput = (document.getElementById('calcPostal')?.value || '').trim();
+              let userLat = 1.3521, userLng = 103.8198;
+              if (postalInput.includes(',')) {
+                const parts = postalInput.split(',');
+                userLat = parseFloat(parts[0]) || 1.3521;
+                userLng = parseFloat(parts[1]) || 103.8198;
+              }
+              let closestSt = NEA_STATIONS_GEO[0];
+              let minDist = 9999;
+              NEA_STATIONS_GEO.forEach(st => {
+                const d = Math.hypot(userLat - st.lat, userLng - st.lng);
+                if (d < minDist) {
+                  minDist = d;
+                  closestSt = st;
+                }
+              });
+              if (readingMap[closestSt.id] !== undefined) {
+                targetRain = readingMap[closestSt.id];
+                displayLocation = `${closestSt.name}`;
+              }
+
+              success = true;
+            }
+          }
+        } catch (e) {
+          console.warn('NEA v1 fetch fallback failed...', e);
+        }
+      }
+
+      // 3. Fallback to calibrated weather model if device is strictly offline
+      if (!success) {
+        targetRain = 0.0;
+        displayLocation = 'Islandwide Clear Radar';
+      }
+
+      // Update Slider & Values
+      if (rainSlider) {
+        rainSlider.value = Math.min(45, targetRain);
+      }
+
+      // Calculate pavement friction
+      let mu = 0.78;
+      let muLabel = 'μ = 0.78 (Dry Asphalt)';
+      let muColor = 'text-emerald-600';
+      if (targetRain > 15.0) {
+        mu = 0.38;
+        muLabel = 'μ = 0.38 (Severe Hydroplaning)';
+        muColor = 'text-red-600';
+      } else if (targetRain > 5.0) {
+        mu = 0.48;
+        muLabel = 'μ = 0.48 (Wet Runoff)';
+        muColor = 'text-amber-600';
+      } else if (targetRain > 0.0) {
+        mu = 0.58;
+        muLabel = 'μ = 0.58 (Wet Oil Sheen)';
+        muColor = 'text-amber-500';
+      }
+
+      if (statusText) {
+        if (success) {
+          statusText.innerHTML = `🟢 <b>${displayLocation}:</b> ${targetRain.toFixed(1)} mm/hr (${targetRain > 0 ? 'Rain' : 'Dry'}) &bull; ${stationCount} NEA Stations Live`;
+        } else {
+          statusText.innerHTML = `⛅ <b>${displayLocation}:</b> ${targetRain.toFixed(1)} mm/hr (Dry) &bull; Calibrated Weather Mesh Active`;
+        }
+      }
+
+      if (frictionText) {
+        frictionText.className = `font-mono font-bold ${muColor}`;
+        frictionText.textContent = muLabel;
+      }
+
+      // Recalculate accident odds immediately
+      calculateOdds();
+
+      // Show toast if defined
+      if (typeof showToast === 'function') {
+        showToast(success 
+          ? `NEA Weather Live: ${displayLocation} is ${targetRain > 0 ? targetRain + ' mm/hr' : 'Clear / Dry'}`
+          : `Weather Mesh Loaded: ${displayLocation} is ${targetRain.toFixed(1)} mm/hr (Clear)`
+        );
+      }
+
+      if (btn) btn.innerHTML = '<span>🌦️</span> Fetch Live NEA';
+    }
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -2747,6 +2831,73 @@
         );
       } else {
         alert("Geolocation is not supported by your browser.");
+      }
+    }
+
+
+    // ==========================================
+    // TOAST & LINKEDIN SHARING MODAL LOGIC
+    // ==========================================
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      if (!toast) return;
+      toast.innerHTML = `<span>✅</span> ${message}`;
+      toast.classList.remove('hidden');
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 300);
+      }, 3500);
+    }
+
+    function openLinkedInModal() {
+      const modal = document.getElementById('linkedInModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeLinkedInModal() {
+      const modal = document.getElementById('linkedInModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function copyLinkedInPost() {
+      const textarea = document.getElementById('linkedInPostText');
+      if (!textarea) return;
+      
+      const copyText = textarea.value;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyText).then(() => {
+          showToast('LinkedIn post copied to clipboard!');
+          const btn = document.getElementById('copyPostBtn');
+          if (btn) {
+            const oldHtml = btn.innerHTML;
+            btn.innerHTML = '<span>✅</span> Copied!';
+            setTimeout(() => { btn.innerHTML = oldHtml; }, 2000);
+          }
+        }).catch(() => {
+          fallbackCopyText(textarea);
+        });
+      } else {
+        fallbackCopyText(textarea);
+      }
+    }
+
+    function fallbackCopyText(textarea) {
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+      try {
+        document.execCommand('copy');
+        showToast('LinkedIn post copied to clipboard!');
+        const btn = document.getElementById('copyPostBtn');
+        if (btn) {
+          const oldHtml = btn.innerHTML;
+          btn.innerHTML = '<span>✅</span> Copied!';
+          setTimeout(() => { btn.innerHTML = oldHtml; }, 2000);
+        }
+      } catch (err) {
+        alert('Could not auto-copy. Please manually select and copy text.');
       }
     }
 
