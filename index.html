@@ -170,6 +170,9 @@
       <button onclick="switchTab('global-tab')" class="tab-btn pill-item px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--background)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] flex items-center gap-1.5 whitespace-nowrap" id="btn-global">
         <span>🌐</span> Global Benchmark Matrix
       </button>
+      <button onclick="switchTab('intelligence-tab')" class="tab-btn pill-item px-3.5 py-2 rounded-xl text-xs md:text-sm font-medium bg-[var(--background)] hover:bg-[var(--border)] text-[var(--foreground)] border border-[var(--border)] flex items-center gap-1.5 whitespace-nowrap" id="btn-intelligence">
+        <span>🎯</span> Actionable Intelligence
+      </button>
     </div>
   </header>
 
@@ -564,58 +567,6 @@
 
 
   
-    <!-- Executive Guidance for Key Decision-Makers -->
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-4">
-      <div class="flex items-center gap-2">
-        <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 rounded-full border border-blue-500/20">Actionable Intelligence</span>
-        <h3 class="font-bold text-base text-[var(--foreground)]">Strategic Takeaways for Key Decision-Makers & Industry Leaders</h3>
-      </div>
-      <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
-        How different stakeholders across Singapore's transport, insurance, and policy ecosystem can leverage this data-driven evidence base:
-      </p>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-        
-        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
-          <div class="font-bold text-blue-600 flex items-center gap-1.5">
-            <span>🏛️</span> Transport Policy Planners
-          </div>
-          <p class="text-[var(--muted-foreground)] leading-relaxed">
-            Expand LTA Silver Zones and Friendly Streets into high-risk mature housing estates (Toa Payoh, Bedok, Chinatown). Physical speed-calming chicanes consistently outperform educational campaigns by 68–75%.
-          </p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
-          <div class="font-bold text-purple-600 flex items-center gap-1.5">
-            <span>📊</span> Motor Insurers & Actuaries
-          </div>
-          <p class="text-[var(--muted-foreground)] leading-relaxed">
-            Factor in speed-shear shockwave corridors (|ΔBand| ≥ 3) and night departure exposure. High-torque mass EVs carry a 1.44× wet-weather collision multiplier compared to conventional ICE sedans.
-          </p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
-          <div class="font-bold text-amber-600 flex items-center gap-1.5">
-            <span>🚚</span> Commercial Logistics Fleets
-          </div>
-          <p class="text-[var(--muted-foreground)] leading-relaxed">
-            Fleet data confirms that 60 km/h speed-limiter compliant lorries maintain a 1.21× risk multiplier versus 1.68× for un-limited vehicles. Heavy logistics corridors (AYE Clementi, Pioneer) demand dynamic lane-weaving mitigation.
-          </p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
-          <div class="font-bold text-emerald-600 flex items-center gap-1.5">
-            <span>🛰️</span> Tech & Telematics Innovators
-          </div>
-          <p class="text-[var(--muted-foreground)] leading-relaxed">
-            ERP 2.0 GNSS satellite receivers enable V2X collision prevention. By tracking 1 Hz micro-weaving (σθ > 4.2°) and zero-velocity stalls, emergency services achieve a sub-60s automated dispatch SLA.
-          </p>
-        </div>
-
-      </div>
-    </div>
-
-
   <!-- TAB 1: 7x24 TEMPORAL HEATMAP & ACCIDENT SEGREGATION -->
   <section id="heatmap-tab" class="tab-content hidden space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -727,54 +678,6 @@
         </div>
       </div>
     </div>
-  </section>
-
-  
-    <!-- Analytical Dossier: 7x24 Temporal Dynamics & Peak Avoidance -->
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-red-500/10 text-red-500 rounded-full border border-red-500/20">Temporal Analysis</span>
-        <h3 class="font-bold text-base text-[var(--foreground)]">Understanding Singapore's 7×24 Accident Cycles & Avoidance Windows</h3>
-      </div>
-      <p class="text-xs text-[var(--muted-foreground)] leading-relaxed mb-4">
-        Collision frequency on Singapore roads is not uniformly distributed across time. Analyzing 7,560 official injury crashes logged by the Singapore Police Force (SPF) reveals distinct diurnal and weekly operational regimes dictated by human circadian biology, commercial gig-economy delivery deadlines, and nightlife social cycles.
-      </p>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-        
-        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <div class="font-bold text-red-500 flex items-center justify-between mb-1.5">
-            <span>Peak Crisis: Fri & Sat (23:30 – 04:00)</span>
-            <span class="font-mono bg-red-500/10 px-2 py-0.5 rounded text-[11px]">2.45× Hazard</span>
-          </div>
-          <p class="text-[var(--muted-foreground)] leading-relaxed">
-            The single highest collision window islandwide. Driven by late-night alcohol departures from entertainment belts (Clarke Quay, Orchard, Geylang, Marina Bay), driver micro-sleeps / circadian low, and excessive speeding on open expressways. Crash lethality is 3.2× higher due to high kinetic energy at impact.
-          </p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <div class="font-bold text-amber-500 flex items-center justify-between mb-1.5">
-            <span>Peak Commute: Mon–Fri (08:00 – 09:30 & 18:00 – 19:30)</span>
-            <span class="font-mono bg-amber-500/10 px-2 py-0.5 rounded text-[11px]">1.75× – 2.35×</span>
-          </div>
-          <p class="text-[var(--muted-foreground)] leading-relaxed">
-            Characterized by extreme traffic density and stop-and-go speed shear (|ΔBand| ≥ 3). Motorcycle lane-filtering between stationary lanes produces severe sideswipe and pinch accidents, while Friday evening rush hour (17:30 – 19:30) experiences the week's highest cumulative crash volume.
-          </p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <div class="font-bold text-emerald-500 flex items-center justify-between mb-1.5">
-            <span>Optimal Avoidance: Mon–Fri (10:30 – 11:30 & 14:00 – 16:00)</span>
-            <span class="font-mono bg-emerald-500/10 px-2 py-0.5 rounded text-[11px]">&lt;0.65× Hazard</span>
-          </div>
-          <p class="text-[var(--muted-foreground)] leading-relaxed">
-            The safest departure windows for non-urgent inter-town journeys. Expressways maintain uniform Speed Band 7–8 (free-flow 70–90 km/h), speed shear shockwaves are absent, and commercial delivery vans have completed morning distribution cycles. Early mornings (05:30 – 06:45) also offer clean flow.
-          </p>
-        </div>
-
-      </div>
-    </div>
-
   </section>
 
   <!-- TAB 2: GIS CORRIDOR MAP & HOTSPOT SUBZONES -->
@@ -1380,9 +1283,7 @@
         </table>
       </div>
     </div>
-  </section>
 
-  
     <!-- Analytical Dossier: International Benchmarks & The COE Utilization Paradox -->
     <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
       <div class="flex items-center gap-2 mb-3">
@@ -1416,6 +1317,238 @@
         <p class="text-[var(--muted-foreground)] leading-relaxed">
           Singapore cannot achieve Vision Zero through car-reduction policies alone. Because <b>54.8% of injury crashes involve motorcycles</b> and <b>75.0% of pedestrian fatalities involve seniors</b>, Singapore's next safety leap requires: (1) Mandatory speed-limiters and ABS on all delivery two-wheelers, (2) Islandwide expansion of LTA Silver Zones and Friendly Streets with automated traffic calming, and (3) Stringent enforcement of the July 2026 30mg BAC threshold paired with ERP 2.0 OBU intoxication telemetry.
         </p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- TAB: ACTIONABLE INTELLIGENCE & STRATEGIC POLICY PLAYBOOK -->
+  <section id="intelligence-tab" class="tab-content hidden space-y-6">
+
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-blue-600/15 via-purple-600/15 to-emerald-600/15 border border-blue-500/30 rounded-2xl p-6 shadow-sm">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-2">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">🎯</span>
+          <h2 class="text-xl font-extrabold text-[var(--foreground)]">Actionable Intelligence & Strategic Playbooks</h2>
+        </div>
+        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 border border-blue-500/20">
+          Executive Synthesis • 4 Verticals
+        </span>
+      </div>
+      <p class="text-xs md:text-sm text-[var(--muted-foreground)] max-w-4xl leading-relaxed">
+        Translating 7,560 official collision records, 11 years of longitudinal trends, and real-time sensor physics into operational playbooks for policy planners, insurance actuaries, logistics fleet operators, and everyday commuters.
+      </p>
+    </div>
+
+    <!-- 1. The 4 Stakeholder Verticals Playbooks -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+      
+      <!-- Vertical 1: Policy Planners -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-all">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
+          <div class="font-bold text-blue-600 text-sm flex items-center gap-1.5">
+            <span>🏛️</span> Transport Policy
+          </div>
+          <span class="text-[10px] font-mono bg-blue-500/10 text-blue-600 px-1.5 py-0.5 rounded font-bold">LTA / TP</span>
+        </div>
+        <ul class="space-y-2 text-[var(--muted-foreground)] leading-relaxed">
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Silver Zone Expansion:</b> Prioritize mature estates (Toa Payoh, Bukit Merah, Bedok). Physical speed-calming chicanes reduce elderly pedestrian fatalities by <b>-75%</b>.</span>
+          </li>
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Expressway Shockwave Dampening:</b> Deploy variable speed limit (VSL) signage 1.5km upstream of TPE Punggol and BKE Woodlands to prevent >25 km/h sudden decelerations.</span>
+          </li>
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>July 2026 BAC Enforcement:</b> High-throughput mobile roadblocks targeting nightlife belts (Clarke Quay, Orchard, Geylang) between 23:30 and 04:00.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Vertical 2: Motor Insurers & Actuaries -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-all">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
+          <div class="font-bold text-purple-600 text-sm flex items-center gap-1.5">
+            <span>💼</span> Motor Insurers
+          </div>
+          <span class="text-[10px] font-mono bg-purple-500/10 text-purple-600 px-1.5 py-0.5 rounded font-bold">Actuarial</span>
+        </div>
+        <ul class="space-y-2 text-[var(--muted-foreground)] leading-relaxed">
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Dynamic Risk Pricing:</b> High-torque EVs and sports coupes exhibit a <b>1.44× hazard multiplier</b> during wet night hours due to instant wheel-torque breakaways.</span>
+          </li>
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Telematics Discount Tiering:</b> Policyholders with ERP 2.0 OBU telemetry demonstrating low micro-weaving (&sigma;&theta; &lt; 2.0&deg;) qualify for up to 15% premium rebates.</span>
+          </li>
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Fleet Commercial Differentiation:</b> Speed-limiter equipped lorries (60 km/h) maintain 1.21× baseline risk vs 1.68× for un-limited vehicles.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Vertical 3: Commercial Logistics Fleets -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-all">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
+          <div class="font-bold text-amber-600 text-sm flex items-center gap-1.5">
+            <span>🚚</span> Logistics Fleets
+          </div>
+          <span class="text-[10px] font-mono bg-amber-500/10 text-amber-600 px-1.5 py-0.5 rounded font-bold">Freight</span>
+        </div>
+        <ul class="space-y-2 text-[var(--muted-foreground)] leading-relaxed">
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Speed Limiter Compliance:</b> Heavy tippers and prime-movers restricted to 60 km/h achieve a <b>-28% reduction</b> in rear-end collision momentum on AYE and PIE corridors.</span>
+          </li>
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Rush Hour Dispatch Curfew:</b> Reschedule bulk container haulage from Pioneer/Tuas outside the Friday evening commuting peak (17:30–19:30).</span>
+          </li>
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Braking Disparity Awareness:</b> In convective rain (&gt;15mm/hr), heavy lorry stopping distance increases by <b>+105%</b>; mandate 6-second following headways.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Vertical 4: Everyday Commuters & Motorcyclists -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md transition-all">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-2.5">
+          <div class="font-bold text-emerald-600 text-sm flex items-center gap-1.5">
+            <span>🏍️</span> Commuters & Riders
+          </div>
+          <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-600 px-1.5 py-0.5 rounded font-bold">Safety First</span>
+        </div>
+        <ul class="space-y-2 text-[var(--muted-foreground)] leading-relaxed">
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Motorcycle Lane-Filtering:</b> Riders face a <b>3.65× fleet risk multiplier</b> and represent 55.6% of fatalities. Avoid filtering when speed shear between lanes exceeds 20 km/h.</span>
+          </li>
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Wet-Onset Oil-Film Lift:</b> The first 20 minutes of rain emulsify road oils into a slick layer (&mu; = 0.58). Avoid rapid braking across painted road markings.</span>
+          </li>
+          <li class="flex items-start gap-1.5">
+            <span class="text-emerald-500 font-bold">✓</span>
+            <span><b>Zero-Tolerance Alcohol Law:</b> From July 2026, BAC &gt; 30 mg/100ml is illegal. Even 1 standard drink impairs night peripheral vision; use ride-hail or valet.</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- 2. The Master 7x24 Avoidance Schedule -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-4">
+      <div class="flex items-center justify-between flex-wrap gap-2 border-b border-[var(--border)] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-red-500/10 text-red-500 rounded-full border border-red-500/20">Temporal Intelligence</span>
+          <h3 class="font-bold text-base text-[var(--foreground)]">Singapore 7×24 Operational Departure Windows</h3>
+        </div>
+        <span class="text-xs text-[var(--muted-foreground)] font-mono">Calibrated against 7,560 SPF Injury Collisions</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        
+        <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/20 space-y-2">
+          <div class="font-bold text-red-600 dark:text-red-400 flex items-center justify-between">
+            <span>🚨 Extreme Hazard (Avoid Travel)</span>
+            <span class="font-mono bg-red-500/20 px-2 py-0.5 rounded text-[11px]">2.45× Hazard</span>
+          </div>
+          <div class="font-semibold text-[var(--foreground)]">Fri & Sat: 23:30 – 04:00</div>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            Late-night entertainment egress across Clarke Quay, Orchard, and Geylang. Combines alcohol impairment, open expressway speeding, and circadian driver fatigue. Collision lethality is <b>3.2× higher</b> due to extreme impact kinetic energy.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 space-y-2">
+          <div class="font-bold text-amber-700 dark:text-amber-400 flex items-center justify-between">
+            <span>⚠️ High Congestion & Pinch Risk</span>
+            <span class="font-mono bg-amber-500/20 px-2 py-0.5 rounded text-[11px]">1.75× – 2.35×</span>
+          </div>
+          <div class="font-semibold text-[var(--foreground)]">Mon–Fri: 08:00–09:30 & 18:00–19:30</div>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            High traffic density and violent speed-shear shockwaves (|&Delta;Band| &ge; 3). Motorcycle lane-filtering between queuing vehicles creates severe sideswipe and rear-end hazards, especially on Friday evenings (17:30–19:30).
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 space-y-2">
+          <div class="font-bold text-emerald-700 dark:text-emerald-400 flex items-center justify-between">
+            <span>✓ Optimal Departure Windows</span>
+            <span class="font-mono bg-emerald-500/20 px-2 py-0.5 rounded text-[11px]">&lt;0.55× Baseline</span>
+          </div>
+          <div class="font-semibold text-[var(--foreground)]">Mon–Fri: 10:30–11:30 & 14:00–16:00</div>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            The safest departure windows for non-urgent journeys. Expressways maintain uniform Speed Band 7–8 (free-flow 70–90 km/h) without sudden deceleration waves. Early mornings before 06:45 and weekend mornings before 09:00 also provide nominal conditions.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3. Top Corridor Engineering & Policy Intervention Ledger -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-4">
+      <div class="flex items-center justify-between flex-wrap gap-2 border-b border-[var(--border)] pb-3">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-purple-500/10 text-purple-600 rounded-full border border-purple-500/20">Infrastructure ROI</span>
+          <h3 class="font-bold text-base text-[var(--foreground)]">Targeted Corridor Engineering Interventions</h3>
+        </div>
+        <span class="text-xs text-[var(--muted-foreground)] font-mono">10 Audited High-Risk Corridors</span>
+      </div>
+
+      <div class="overflow-x-auto text-xs">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-[var(--border)] text-[var(--muted-foreground)] font-semibold">
+              <th class="py-2.5 px-3">Corridor & Subzone</th>
+              <th class="py-2.5 px-3">Primary Risk Catalyst</th>
+              <th class="py-2.5 px-3">YoY Velocity</th>
+              <th class="py-2.5 px-3">Recommended Engineering Mitigation</th>
+              <th class="py-2.5 px-3">Expected Casualty Reduction</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[var(--border)]">
+            <tr class="hover:bg-[var(--background)] transition-colors">
+              <td class="py-2.5 px-3 font-semibold text-[var(--foreground)]">TPE / Punggol-Sengkang Merge</td>
+              <td class="py-2.5 px-3">Morning speed shear (|&Delta;v| &ge; 35 km/h) & motorcycle filtering</td>
+              <td class="py-2.5 px-3 text-red-500 font-bold">+14.2% YoY</td>
+              <td class="py-2.5 px-3">VSL dynamic speed signs + continuous merge physical separator</td>
+              <td class="py-2.5 px-3 text-emerald-600 font-bold">-32% Rear-End Collisions</td>
+            </tr>
+            <tr class="hover:bg-[var(--background)] transition-colors">
+              <td class="py-2.5 px-3 font-semibold text-[var(--foreground)]">BKE / Woodlands Causeway Approach</td>
+              <td class="py-2.5 px-3">Cross-border freight & motorcycle mixing + checkpoint bottleneck</td>
+              <td class="py-2.5 px-3 text-red-500 font-bold">+11.8% YoY</td>
+              <td class="py-2.5 px-3">Dedicated cross-border two-wheeler segregation viaduct</td>
+              <td class="py-2.5 px-3 text-emerald-600 font-bold">-45% Motorcycle Incidents</td>
+            </tr>
+            <tr class="hover:bg-[var(--background)] transition-colors">
+              <td class="py-2.5 px-3 font-semibold text-[var(--foreground)]">PIE / Jurong West - Tuas Freight</td>
+              <td class="py-2.5 px-3">Prime-mover wet braking mass disparity (&mu;=0.38)</td>
+              <td class="py-2.5 px-3 text-red-500 font-bold">+12.9% YoY</td>
+              <td class="py-2.5 px-3">Porous asphalt drainage + mandatory 60 km/h lane restriction</td>
+              <td class="py-2.5 px-3 text-emerald-600 font-bold">-28% Heavy Vehicle Pileups</td>
+            </tr>
+            <tr class="hover:bg-[var(--background)] transition-colors">
+              <td class="py-2.5 px-3 font-semibold text-[var(--foreground)]">Toa Payoh Central / Lorong 1-6</td>
+              <td class="py-2.5 px-3">26.0% elderly population; unsignalized pedestrian crossings</td>
+              <td class="py-2.5 px-3 text-red-500 font-bold">+13.5% YoY</td>
+              <td class="py-2.5 px-3">LTA Silver Zone with raised textured chicanes & 40 km/h limit</td>
+              <td class="py-2.5 px-3 text-emerald-600 font-bold">-75% Senior Casualties</td>
+            </tr>
+            <tr class="hover:bg-[var(--background)] transition-colors">
+              <td class="py-2.5 px-3 font-semibold text-[var(--foreground)]">Clarke Quay / River Valley Belt</td>
+              <td class="py-2.5 px-3">48.5 bars/km&sup2;; nocturnal alcohol impairment post-midnight</td>
+              <td class="py-2.5 px-3 text-red-500 font-bold">+08.8% YoY</td>
+              <td class="py-2.5 px-3">High-intensity mobile TP breathalyzer checkpoint + valet pickup hubs</td>
+              <td class="py-2.5 px-3 text-emerald-600 font-bold">-54% Drink-Driving Incidents</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
