@@ -55,6 +55,16 @@
         "DC_API_KEY": "YOUR_DATACOMMONS_API_KEY",
         "DC_SEARCH_SCOPE": "base_only"
       }
+    },
+    "sg-nea-weather-mcp": {
+      "command": "C:/Python314/python.exe",
+      "args": [
+        "c:/Users/lauye/Downloads/rta/skills/sg-road-accident-risk-engine/scripts/nea_weather_mcp.py"
+      ],
+      "env": {
+        "PYTHONUTF8": "1",
+        "PYTHONUNBUFFERED": "1"
+      }
     }
   }
 }

@@ -17,7 +17,7 @@ End-to-end framework for predicting and verifying road accident probability acro
 - Extracting micro-level causal attributes (car make/model, driver age cohort, passenger occupancy, elderly jaywalking, hospital conveyances) from breaking Singapore traffic news (CNA, Straits Times, AsiaOne, SPF Media Room) to enrich sparse 1-line LTA `TrafficIncidents` alerts
 - Analyzing how vehicle class/make/power-to-weight, COE age, lorry speed limiters, driver age, passenger load, BAC tolerance limits ($80\text{ mg/100ml}$ vs. July 2026 amended $30\text{ mg/100ml}$ blood / $15\,\mu\text{g/100ml}$ breath), and wet-road hydroplaning interact
 - Simulating ERP 2.0 On-Board Unit (OBU) GNSS trajectory triangulation for nightlife intoxication profiling and stationary crash/stall detection
-- Deploying the unified or modular FastMCP servers (`mcp_server.py`, `singstat_verifier_mcp.py`, `sg_news_corroborator_mcp.py`) in Antigravity IDE with Gemini 3.8 Flash
+- Deploying the unified or modular FastMCP servers (`mcp_server.py`, `nea_weather_mcp.py`, `singstat_verifier_mcp.py`, `sg_news_corroborator_mcp.py`) in Antigravity IDE with Gemini 3.8 Flash
 
 ## Step-by-Step Workflow
 
@@ -38,9 +38,19 @@ End-to-end framework for predicting and verifying road accident probability acro
      - **Congestion Stop-and-Go Regime (Bands 1-2, $<20\text{ km/h}$)**: Elevated multi-vehicle tailgating and lane-filtering motorcycle side-swipes ($M_{\text{freq}} = 1.42\times$).
      - **Free-Flow Overspeed Regime (Bands 7-8, $\ge 70\text{ km/h}$ arterial or $>90\text{ km/h}$ expressway)**: Exponential kinetic energy severity ($E_k = \frac{1}{2}mv^2$).
      - **Speed Shear Shockwave ($|\Delta \text{Band}| \ge 3$ between adjacent links)**: Highest overall crash probability ($2.35\times$) when Band 7/8 free-flow traffic slams into a sudden Band 1/2 queue at expressway merges.
-2. **Weather & Hydroplaning Coupling ($M_{\text{weather}}$)**:
-   - Query NEA 5-minute `rainfall` and `wind-speed` via `api-open.data.gov.sg`.
-   - First 20 minutes of rainfall after a dry spell lifts oil film onto asphalt ($1.55\times$); heavy convective downpour ($>15\text{ mm/hr}$) reduces tire-pavement friction $\mu$ from $0.75$ to $0.42$ and increases stopping distance by $+56\%$ at $60\text{ km/h}$ ($1.85\times$, or $2.40\times$ for two-wheelers).
+2. **Weather & Hydroplaning Coupling ($M_{\text{weather}}$) via `sg-nea-weather-mcp`**:
+   - Query NEA Real-Time APIs (keyless v2 endpoints via `api-open.data.gov.sg`):
+     - **5-Minute Station Rainfall**: `https://api-open.data.gov.sg/v2/real-time/api/rainfall` (across all 88 active stations islandwide).
+     - **2-Hour Town Nowcast**: `https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast` (47 planning area forecast strings).
+     - **Wind Speed & Direction**: `https://api-open.data.gov.sg/v2/real-time/api/wind-speed` (detecting lateral bridge crosswinds).
+   - **Tire-Pavement Friction Degradation & Hydroplaning Physics**:
+     - *Dry Asphalt*: Friction coefficient $\mu \approx 0.78 - 0.82$.
+     - *First 20 Minutes (Wet-Onset Oil-Film Lift)*: Rain emulsifies deposited road oils into a slick film ($1.55\times$ hazard, $\mu \approx 0.58$).
+     - *Moderate Rain ($5 - 15\text{ mm/hr}$)*: Continuous surface water sheeting ($\mu \approx 0.48$, braking distance increases $+62\%$ at $80\text{ km/h}$).
+     - *Convective Deluge ($>15\text{ mm/hr}$)*: Deep ponding triggers tire hydroplaning ($2.60\times$ hazard, $\mu \approx 0.38$, stopping distance increases $+105\%$).
+   - **Horne's Dynamic Hydroplaning Threshold Equation**:
+     $$V_{\text{hydro}} = 10.35 \cdot \sqrt{P_{\text{tire}}} \cdot \left(\frac{D_{\text{tread}}}{8.0}\right)^{0.35}$$
+     At standard passenger tire pressure ($32\text{ psi}$) with $4\text{ mm}$ tread depth, critical hydroplaning occurs at **$58.5\text{ km/h}$**; vehicles traveling at expressway limits ($90\text{ km/h}$) completely lose directional steering.
 3. **Bar / Pub / Coffee-Shop Kernel Density & BAC Tolerance ($M_{\text{alcohol}}$)**:
    - Compute spatial Gaussian kernel density $K_{\text{bar}}(s)$ with $\sigma = 650\text{ m}$ over licensed nightlife clusters and late-night coffee shops.
    - Activate diurnal nightlife plume multiplier between **22:00 and 04:30**, scaling risk by driver BAC relative to both the legacy $80\text{ mg/100ml}$ ($35\,\mu\text{g/100ml}$ breath) threshold and the July 2026 Road Traffic Act amendment threshold of **$30\text{ mg/100ml}$ blood ($15\,\mu\text{g/100ml}$ breath)**.

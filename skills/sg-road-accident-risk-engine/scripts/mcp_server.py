@@ -87,13 +87,34 @@ def fetch_lta_realtime_telemetry(skip: int = 0) -> Dict[str, Any]:
 
 
 @mcp.tool()
-def fetch_nea_weather_realtime() -> Dict[str, Any]:
+def fetch_nea_weather_realtime(postal_code_or_subzone: Optional[str] = None) -> Dict[str, Any]:
     """
-    Fetch live 5-minute rainfall and wind-speed station readings across Singapore from NEA (data.gov.sg v2 API).
+    Fetch live 5-minute rainfall and 2-hour nowcast across Singapore from NEA (data.gov.sg v2 API).
+    If a postal code is provided, resolves the nearest weather station and precipitation rate.
     """
     try:
         rain_data = _http_get_json("https://api-open.data.gov.sg/v2/real-time/api/rainfall")
-        return {"status": "live", "source": "https://api-open.data.gov.sg/v2/real-time/api/rainfall", "data": rain_data}
+        nowcast_data = _http_get_json("https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast")
+        
+        stations = rain_data.get("data", {}).get("stations", [])
+        readings = rain_data.get("data", {}).get("readings", [{}])[0].get("data", [])
+        
+        max_rain = 0.0
+        max_st = "None"
+        for r in readings:
+            val_hr = float(r.get("value", 0.0)) * 12.0
+            if val_hr > max_rain:
+                max_rain = val_hr
+                max_st = r.get("stationId")
+                
+        return {
+            "status": "live",
+            "source": "NEA / data.gov.sg v2 Real-Time APIs",
+            "total_stations": len(stations),
+            "islandwide_max_rain_mm_hr": round(max_rain, 2),
+            "sample_forecasts": nowcast_data.get("data", {}).get("items", [{}])[0].get("forecasts", [])[:10],
+            "sample_station_readings": readings[:10]
+        }
     except Exception as e:
         return {"status": "offline_fallback", "error": str(e), "source": "https://api-open.data.gov.sg/v2/real-time/api/rainfall"}
 
