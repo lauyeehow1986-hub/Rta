@@ -1562,21 +1562,119 @@
     // NEA REAL-TIME WEATHER API INTEGRATION
     // ==========================================
     const NEA_STATIONS_GEO = [
-      { id: "S218", name: "Bukit Batok", lat: 1.3649, lng: 103.7506 },
-      { id: "S109", name: "Ang Mo Kio", lat: 1.3764, lng: 103.8492 },
-      { id: "S117", name: "Changi Airport", lat: 1.3644, lng: 103.9826 },
+      { id: "S129", name: "Bedok Stadium", lat: 1.3257, lng: 103.9397 },
+      { id: "S300", name: "Bedok Reservoir", lat: 1.3430, lng: 103.9197 },
+      { id: "S84",  name: "Tampines Avenue 5", lat: 1.3443, lng: 103.9441 },
       { id: "S107", name: "East Coast Parkway", lat: 1.3135, lng: 103.9625 },
-      { id: "S44",  name: "Jurong Pier", lat: 1.3138, lng: 103.7109 },
-      { id: "S121", name: "Clementi", lat: 1.3337, lng: 103.7768 },
-      { id: "S106", name: "Pulau Ubin", lat: 1.4168, lng: 103.9673 },
-      { id: "S111", name: "Newton / Orchard", lat: 1.3105, lng: 103.8365 },
-      { id: "S90",  name: "Punggol Central", lat: 1.4019, lng: 103.9073 },
+      { id: "S117", name: "Changi Airport", lat: 1.3644, lng: 103.9826 },
+      { id: "S208", name: "Changi East Close", lat: 1.3136, lng: 104.0032 },
       { id: "S116", name: "Pasir Ris", lat: 1.3701, lng: 103.9486 },
-      { id: "S60",  name: "Sentosa", lat: 1.2500, lng: 103.8279 },
-      { id: "S104", name: "Woodlands Checkpoint", lat: 1.4439, lng: 103.7854 },
+      { id: "S81",  name: "Punggol Central", lat: 1.4028, lng: 103.9095 },
+      { id: "S220", name: "Compassvale / Sengkang", lat: 1.3867, lng: 103.8980 },
+      { id: "S221", name: "Hougang Avenue 1", lat: 1.3569, lng: 103.8909 },
+      { id: "S109", name: "Ang Mo Kio", lat: 1.3764, lng: 103.8492 },
+      { id: "S217", name: "Bishan Street 13", lat: 1.3503, lng: 103.8550 },
+      { id: "S88",  name: "Toa Payoh North", lat: 1.3417, lng: 103.8515 },
+      { id: "S222", name: "Henderson Road (Outram / SGH)", lat: 1.2899, lng: 103.8236 },
+      { id: "S77",  name: "Alexandra Road", lat: 1.2937, lng: 103.8127 },
+      { id: "S111", name: "Newton / Orchard", lat: 1.3105, lng: 103.8365 },
       { id: "S108", name: "Marina Barrage", lat: 1.2799, lng: 103.8703 },
-      { id: "S24",  name: "Upper Peirce Reservoir", lat: 1.3700, lng: 103.8050 }
+      { id: "S214", name: "Tanjong Rhu", lat: 1.2991, lng: 103.8829 },
+      { id: "S215", name: "Geylang East Central", lat: 1.3194, lng: 103.8819 },
+      { id: "S60",  name: "Sentosa", lat: 1.2500, lng: 103.8279 },
+      { id: "S50",  name: "Clementi Road", lat: 1.3318, lng: 103.7762 },
+      { id: "S121", name: "Clementi Central", lat: 1.3337, lng: 103.7768 },
+      { id: "S71",  name: "Kent Ridge Road (NUS)", lat: 1.2923, lng: 103.7815 },
+      { id: "S218", name: "Bukit Batok", lat: 1.3649, lng: 103.7506 },
+      { id: "S180", name: "Taman Jurong Greens", lat: 1.3370, lng: 103.7183 },
+      { id: "S44",  name: "Jurong Pier / NTU", lat: 1.3458, lng: 103.6817 },
+      { id: "S132", name: "Jurong West Stadium", lat: 1.3379, lng: 103.6954 },
+      { id: "S104", name: "Woodlands Avenue 9", lat: 1.4439, lng: 103.7854 },
+      { id: "S210", name: "Woodlands Centre Road", lat: 1.4400, lng: 103.7690 },
+      { id: "S209", name: "Yishun Ring Road", lat: 1.4211, lng: 103.8447 },
+      { id: "S80",  name: "Sembawang Met Station", lat: 1.4247, lng: 103.8201 },
+      { id: "S24",  name: "Upper Peirce Reservoir", lat: 1.3700, lng: 103.8050 },
+      { id: "S106", name: "Pulau Ubin", lat: 1.4168, lng: 103.9673 }
     ];
+
+    // Global NEA Telemetry Cache for instant postal recalculation
+    let latestNeaCache = null;
+
+    function resolveLocationCoords(rawInput) {
+      const input = (rawInput || '').trim();
+      let lat = 1.2800, lng = 103.8350; // Default: Sector 16 Outram / SGH
+      let label = 'Outram / SGH';
+
+      if (input.includes(',')) {
+        const parts = input.split(',');
+        lat = parseFloat(parts[0]) || 1.3521;
+        lng = parseFloat(parts[1]) || 103.8198;
+        label = `Coordinates (${lat.toFixed(3)}, ${lng.toFixed(3)})`;
+      } else {
+        const secPrefix = input.length >= 2 ? input.substring(0, 2) : "16";
+        const matched = SG_POSTAL_SECTORS[secPrefix];
+        if (matched && matched.lat && matched.lng) {
+          lat = matched.lat;
+          lng = matched.lng;
+          label = matched.area;
+        } else if (typeof GIS_HOTSPOTS !== 'undefined') {
+          const spot = GIS_HOTSPOTS.find(h => 
+            h.name.toLowerCase().includes(input.toLowerCase()) || 
+            input.toLowerCase().includes(h.name.toLowerCase())
+          );
+          if (spot) {
+            lat = spot.lat;
+            lng = spot.lng;
+            label = spot.name;
+          }
+        }
+      }
+      return { lat, lng, label };
+    }
+
+    function applyNeaStationMatch(readingMap, stationsList, userLat, userLng, defaultLocationName) {
+      let closestId = null;
+      let closestName = null;
+      let minDist = 999999;
+
+      // 1. Check all live stations returned by API
+      if (stationsList && stationsList.length > 0) {
+        stationsList.forEach(st => {
+          const sid = st.id || st.deviceId || st.device_id;
+          const sname = st.name || `Station ${sid}`;
+          const slat = st.location?.latitude || st.lat;
+          const slng = st.location?.longitude || st.lng;
+          if (slat && slng && readingMap[sid] !== undefined) {
+            const d = Math.hypot(userLat - slat, userLng - slng);
+            if (d < minDist) {
+              minDist = d;
+              closestId = sid;
+              closestName = sname;
+            }
+          }
+        });
+      }
+
+      // 2. Fallback to NEA_STATIONS_GEO
+      if (!closestId) {
+        NEA_STATIONS_GEO.forEach(st => {
+          if (readingMap[st.id] !== undefined) {
+            const d = Math.hypot(userLat - st.lat, userLng - st.lng);
+            if (d < minDist) {
+              minDist = d;
+              closestId = st.id;
+              closestName = st.name;
+            }
+          }
+        });
+      }
+
+      const distKm = (minDist * 111.0).toFixed(1);
+      const targetRain = (closestId && readingMap[closestId] !== undefined) ? readingMap[closestId] : 0.0;
+      const matchedStationName = closestName || defaultLocationName || 'Islandwide Automated Station';
+
+      return { closestId, matchedStationName, targetRain, distKm };
+    }
 
     async function fetchLiveNeaWeather() {
       const btn = document.getElementById('btnFetchWeather');
@@ -1588,8 +1686,8 @@
       if (statusText) statusText.textContent = 'Connecting to NEA Real-Time Sensor Telemetry...';
 
       let success = false;
-      let targetRain = 0.0;
-      let displayLocation = 'Islandwide Automated Stations';
+      let readingMap = {};
+      let stationsList = [];
       let stationCount = 88;
 
       // 1. Try v2 API with 3.5s timeout
@@ -1602,50 +1700,14 @@
         if (resp.ok) {
           const data = await resp.json();
           const readings = data?.data?.readings?.[0]?.data || [];
-          const stations = data?.data?.stations || [];
+          stationsList = data?.data?.stations || [];
           if (readings.length > 0) {
             stationCount = readings.length;
-            let maxRainMmHr = 0.0;
-            let maxStationId = readings[0].stationId;
-            let readingMap = {};
-
             readings.forEach(r => {
               const val5m = parseFloat(r.value || 0.0);
               const valHr = Math.round(val5m * 12.0 * 10) / 10;
               readingMap[r.stationId] = valHr;
-              if (valHr > maxRainMmHr) {
-                maxRainMmHr = valHr;
-                maxStationId = r.stationId;
-              }
             });
-
-            // Match user location or peak
-            const postalInput = (document.getElementById('calcPostal')?.value || '').trim();
-            targetRain = maxRainMmHr;
-            const stObj = stations.find(s => s.id === maxStationId);
-            displayLocation = stObj ? stObj.name : `Station ${maxStationId}`;
-
-            // Check if specific coordinates or sector match
-            let userLat = 1.3521, userLng = 103.8198;
-            if (postalInput.includes(',')) {
-              const parts = postalInput.split(',');
-              userLat = parseFloat(parts[0]) || 1.3521;
-              userLng = parseFloat(parts[1]) || 103.8198;
-            }
-            let closestSt = NEA_STATIONS_GEO[0];
-            let minDist = 9999;
-            NEA_STATIONS_GEO.forEach(st => {
-              const d = Math.hypot(userLat - st.lat, userLng - st.lng);
-              if (d < minDist) {
-                minDist = d;
-                closestSt = st;
-              }
-            });
-            if (readingMap[closestSt.id] !== undefined) {
-              targetRain = readingMap[closestSt.id];
-              displayLocation = `${closestSt.name}`;
-            }
-
             success = true;
           }
         }
@@ -1664,48 +1726,14 @@
           if (resp.ok) {
             const data = await resp.json();
             const readings = data?.items?.[0]?.readings || [];
-            const stations = data?.metadata?.stations || [];
+            stationsList = data?.metadata?.stations || [];
             if (readings.length > 0) {
               stationCount = readings.length;
-              let maxRainMmHr = 0.0;
-              let maxStationId = readings[0].station_id;
-              let readingMap = {};
-
               readings.forEach(r => {
                 const val5m = parseFloat(r.value || 0.0);
                 const valHr = Math.round(val5m * 12.0 * 10) / 10;
                 readingMap[r.station_id] = valHr;
-                if (valHr > maxRainMmHr) {
-                  maxRainMmHr = valHr;
-                  maxStationId = r.station_id;
-                }
               });
-
-              targetRain = maxRainMmHr;
-              const stObj = stations.find(s => s.id === maxStationId);
-              displayLocation = stObj ? stObj.name : `Station ${maxStationId}`;
-
-              const postalInput = (document.getElementById('calcPostal')?.value || '').trim();
-              let userLat = 1.3521, userLng = 103.8198;
-              if (postalInput.includes(',')) {
-                const parts = postalInput.split(',');
-                userLat = parseFloat(parts[0]) || 1.3521;
-                userLng = parseFloat(parts[1]) || 103.8198;
-              }
-              let closestSt = NEA_STATIONS_GEO[0];
-              let minDist = 9999;
-              NEA_STATIONS_GEO.forEach(st => {
-                const d = Math.hypot(userLat - st.lat, userLng - st.lng);
-                if (d < minDist) {
-                  minDist = d;
-                  closestSt = st;
-                }
-              });
-              if (readingMap[closestSt.id] !== undefined) {
-                targetRain = readingMap[closestSt.id];
-                displayLocation = `${closestSt.name}`;
-              }
-
               success = true;
             }
           }
@@ -1714,40 +1742,57 @@
         }
       }
 
-      // 3. Fallback to calibrated weather model if device is strictly offline
+      // 3. Fallback synthetic reading map if offline
       if (!success) {
-        targetRain = 0.0;
-        displayLocation = 'Islandwide Clear Radar';
+        NEA_STATIONS_GEO.forEach(st => {
+          readingMap[st.id] = 0.0;
+        });
+        stationsList = NEA_STATIONS_GEO;
       }
+
+      // Cache live data for instant re-resolution on postal code change
+      latestNeaCache = {
+        readingMap,
+        stationsList,
+        stationCount,
+        success,
+        timestamp: Date.now()
+      };
+
+      // Resolve location from current postal code input
+      const rawPostal = (document.getElementById('calcPostal')?.value || '169069').trim();
+      const loc = resolveLocationCoords(rawPostal);
+      const match = applyNeaStationMatch(readingMap, stationsList, loc.lat, loc.lng, loc.label);
 
       // Update Slider & Values
       if (rainSlider) {
-        rainSlider.value = Math.min(45, targetRain);
+        rainSlider.value = Math.min(45, match.targetRain);
       }
 
       // Calculate pavement friction
       let mu = 0.78;
       let muLabel = 'μ = 0.78 (Dry Asphalt)';
       let muColor = 'text-emerald-600';
-      if (targetRain > 15.0) {
+      if (match.targetRain > 15.0) {
         mu = 0.38;
         muLabel = 'μ = 0.38 (Severe Hydroplaning)';
         muColor = 'text-red-600';
-      } else if (targetRain > 5.0) {
+      } else if (match.targetRain > 5.0) {
         mu = 0.48;
         muLabel = 'μ = 0.48 (Wet Runoff)';
         muColor = 'text-amber-600';
-      } else if (targetRain > 0.0) {
+      } else if (match.targetRain > 0.0) {
         mu = 0.58;
         muLabel = 'μ = 0.58 (Wet Oil Sheen)';
         muColor = 'text-amber-500';
       }
 
       if (statusText) {
+        const distInfo = match.distKm && parseFloat(match.distKm) < 50 ? ` (${match.distKm} km away)` : '';
         if (success) {
-          statusText.innerHTML = `🟢 <b>${displayLocation}:</b> ${targetRain.toFixed(1)} mm/hr (${targetRain > 0 ? 'Rain' : 'Dry'}) &bull; ${stationCount} NEA Stations Live`;
+          statusText.innerHTML = `🟢 <b>${match.matchedStationName}:</b> ${match.targetRain.toFixed(1)} mm/hr (${match.targetRain > 0 ? 'Rain' : 'Dry'})${distInfo} &bull; ${stationCount} NEA Stations Live`;
         } else {
-          statusText.innerHTML = `⛅ <b>${displayLocation}:</b> ${targetRain.toFixed(1)} mm/hr (Dry) &bull; Calibrated Weather Mesh Active`;
+          statusText.innerHTML = `⛅ <b>${match.matchedStationName}:</b> ${match.targetRain.toFixed(1)} mm/hr (Dry) &bull; Calibrated Weather Mesh Active`;
         }
       }
 
@@ -1762,8 +1807,8 @@
       // Show toast if defined
       if (typeof showToast === 'function') {
         showToast(success 
-          ? `NEA Weather Live: ${displayLocation} is ${targetRain > 0 ? targetRain + ' mm/hr' : 'Clear / Dry'}`
-          : `Weather Mesh Loaded: ${displayLocation} is ${targetRain.toFixed(1)} mm/hr (Clear)`
+          ? `NEA Weather Live: ${match.matchedStationName} is ${match.targetRain > 0 ? match.targetRain + ' mm/hr' : 'Clear / Dry'}`
+          : `Weather Mesh Loaded: ${match.matchedStationName} is ${match.targetRain.toFixed(1)} mm/hr (Clear)`
         );
       }
 
@@ -1830,139 +1875,139 @@
     // ==========================================
     const SG_POSTAL_SECTORS = {
       // D01 & D02 (CBD, Raffles Place, Chinatown, Marina)
-      "01": { area: "Raffles Place / Marina Bay", district: "D01 (Downtown)", type: "CBD Financial Hub", rate: 0.048, bars: 18.2, elderly: 8.5, road: "arterial_4way", note: "High pedestrian density & PHV pickup friction" },
-      "02": { area: "Anson / Tanjong Pagar", district: "D02 (Chinatown)", type: "CBD Mixed High-Density", rate: 0.052, bars: 22.4, elderly: 12.0, road: "arterial_4way", note: "Evening bar egress & heavy traffic signals" },
-      "03": { area: "Tanjong Pagar / Cecil", district: "D01 (CBD)", type: "Financial Arterial", rate: 0.049, bars: 15.1, elderly: 9.0, road: "arterial_4way", note: "High pedestrian foot-traffic" },
-      "04": { area: "Telok Ayer / Chinatown", district: "D01 (CBD)", type: "Historic Narrow Grid", rate: 0.051, bars: 28.5, elderly: 14.0, road: "arterial_4way", note: "Pedestrian street conflicts & nightlife" },
-      "05": { area: "Marina Downtown / Shenton Way", district: "D01 (Marina)", type: "Multi-Lane Boulevard", rate: 0.046, bars: 12.0, elderly: 7.2, road: "standard_straight", note: "MCE expressway interface" },
-      "06": { area: "Marina Bay Financial Centre", district: "D01 (Marina)", type: "Bayfront Boulevard", rate: 0.045, bars: 14.5, elderly: 6.8, road: "standard_straight", note: "MCE expressway interface" },
-      "07": { area: "Tanjong Pagar / Duxton Hill", district: "D02 (Tanjong Pagar)", type: "Dining & Bar Cluster", rate: 0.062, bars: 42.1, elderly: 13.5, road: "arterial_4way", note: "Post-midnight pedestrian & taxi conflicts" },
-      "08": { area: "Chinatown / Kreta Ayer", district: "D02 (Chinatown)", type: "Senior Pedestrian Grid", rate: 0.065, bars: 24.0, elderly: 23.4, road: "arterial_4way", note: "Critical elderly pedestrian knockdown zone" },
+      "01": { lat: 1.2840, lng: 103.8510, area: "Raffles Place / Marina Bay", district: "D01 (Downtown)", type: "CBD Financial Hub", rate: 0.048, bars: 18.2, elderly: 8.5, road: "arterial_4way", note: "High pedestrian density & PHV pickup friction" },
+      "02": { lat: 1.2750, lng: 103.8440, area: "Anson / Tanjong Pagar", district: "D02 (Chinatown)", type: "CBD Mixed High-Density", rate: 0.052, bars: 22.4, elderly: 12.0, road: "arterial_4way", note: "Evening bar egress & heavy traffic signals" },
+      "03": { lat: 1.2800, lng: 103.8490, area: "Tanjong Pagar / Cecil", district: "D01 (CBD)", type: "Financial Arterial", rate: 0.049, bars: 15.1, elderly: 9.0, road: "arterial_4way", note: "High pedestrian foot-traffic" },
+      "04": { lat: 1.2830, lng: 103.8460, area: "Telok Ayer / Chinatown", district: "D01 (CBD)", type: "Historic Narrow Grid", rate: 0.051, bars: 28.5, elderly: 14.0, road: "arterial_4way", note: "Pedestrian street conflicts & nightlife" },
+      "05": { lat: 1.2780, lng: 103.8530, area: "Marina Downtown / Shenton Way", district: "D01 (Marina)", type: "Multi-Lane Boulevard", rate: 0.046, bars: 12.0, elderly: 7.2, road: "standard_straight", note: "MCE expressway interface" },
+      "06": { lat: 1.2790, lng: 103.8560, area: "Marina Bay Financial Centre", district: "D01 (Marina)", type: "Bayfront Boulevard", rate: 0.045, bars: 14.5, elderly: 6.8, road: "standard_straight", note: "MCE expressway interface" },
+      "07": { lat: 1.2790, lng: 103.8430, area: "Tanjong Pagar / Duxton Hill", district: "D02 (Tanjong Pagar)", type: "Dining & Bar Cluster", rate: 0.062, bars: 42.1, elderly: 13.5, road: "arterial_4way", note: "Post-midnight pedestrian & taxi conflicts" },
+      "08": { lat: 1.2820, lng: 103.8430, area: "Chinatown / Kreta Ayer", district: "D02 (Chinatown)", type: "Senior Pedestrian Grid", rate: 0.065, bars: 24.0, elderly: 23.4, road: "arterial_4way", note: "Critical elderly pedestrian knockdown zone" },
 
       // D03 (Queenstown, Tiong Bahru, Bukit Merah, Outram / SGH)
-      "14": { area: "Queenstown / Alexandra", district: "D03 (Queenstown)", type: "Mature Residential Grid", rate: 0.054, bars: 3.2, elderly: 21.5, road: "arterial_4way", note: "Mature estate with Silver Zone corridors" },
-      "15": { area: "Tiong Bahru / Bukit Merah", district: "D03 (Bukit Merah)", type: "Mature Estate Arterial", rate: 0.058, bars: 12.4, elderly: 23.8, road: "arterial_4way", note: "Silver Zone active; high elderly foot-traffic" },
-      "16": { area: "Outram / Singapore General Hospital (SGH)", district: "D03 (Outram / Bukit Merah)", type: "Healthcare Precinct & Senior Grid", rate: 0.056, bars: 8.6, elderly: 24.2, road: "arterial_4way", note: "High ambulance emergency movements & senior pedestrian hospital access" },
+      "14": { lat: 1.2980, lng: 103.8040, area: "Queenstown / Alexandra", district: "D03 (Queenstown)", type: "Mature Residential Grid", rate: 0.054, bars: 3.2, elderly: 21.5, road: "arterial_4way", note: "Mature estate with Silver Zone corridors" },
+      "15": { lat: 1.2860, lng: 103.8270, area: "Tiong Bahru / Bukit Merah", district: "D03 (Bukit Merah)", type: "Mature Estate Arterial", rate: 0.058, bars: 12.4, elderly: 23.8, road: "arterial_4way", note: "Silver Zone active; high elderly foot-traffic" },
+      "16": { lat: 1.2800, lng: 103.8350, area: "Outram / Singapore General Hospital (SGH)", district: "D03 (Outram / Bukit Merah)", type: "Healthcare Precinct & Senior Grid", rate: 0.056, bars: 8.6, elderly: 24.2, road: "arterial_4way", note: "High ambulance emergency movements & senior pedestrian hospital access" },
 
       // D04 (Harbourfront, Telok Blangah)
-      "09": { area: "Harbourfront / Keppel Bay", district: "D04 (Harbourfront)", type: "Port & Arterial Corridor", rate: 0.055, bars: 16.4, elderly: 11.2, road: "standard_straight", note: "Heavy logistics & ferry terminal traffic" },
-      "10": { area: "Telok Blangah / Mount Faber", district: "D04 (Telok Blangah)", type: "Hilly Arterial / AYE Interface", rate: 0.059, bars: 4.5, elderly: 19.8, road: "t_junction_3way", note: "Curving arterials with speed drops" },
+      "09": { lat: 1.2650, lng: 103.8210, area: "Harbourfront / Keppel Bay", district: "D04 (Harbourfront)", type: "Port & Arterial Corridor", rate: 0.055, bars: 16.4, elderly: 11.2, road: "standard_straight", note: "Heavy logistics & ferry terminal traffic" },
+      "10": { lat: 1.2730, lng: 103.8120, area: "Telok Blangah / Mount Faber", district: "D04 (Telok Blangah)", type: "Hilly Arterial / AYE Interface", rate: 0.059, bars: 4.5, elderly: 19.8, road: "t_junction_3way", note: "Curving arterials with speed drops" },
 
       // D05 (Pasir Panjang, Clementi, West Coast)
-      "11": { area: "Pasir Panjang / Wholesale Centre", district: "D05 (Pasir Panjang)", type: "Heavy Freight Logistics", rate: 0.068, bars: 2.1, elderly: 10.4, road: "standard_straight", note: "Container prime movers & early morning market logistics" },
-      "12": { area: "West Coast / Clementi South", district: "D05 (West Coast)", type: "AYE West Corridor Interface", rate: 0.072, bars: 3.4, elderly: 15.6, road: "expressway_merge", note: "AYE expressway merge shockwaves" },
-      "13": { area: "Clementi Central / West Coast", district: "D05 (Clementi)", type: "Transit Hub & Arterial", rate: 0.060, bars: 5.2, elderly: 18.9, road: "arterial_4way", note: "Silver Zone around Clementi Town Centre" },
+      "11": { lat: 1.2870, lng: 103.7920, area: "Pasir Panjang / Wholesale Centre", district: "D05 (Pasir Panjang)", type: "Heavy Freight Logistics", rate: 0.068, bars: 2.1, elderly: 10.4, road: "standard_straight", note: "Container prime movers & early morning market logistics" },
+      "12": { lat: 1.2930, lng: 103.7840, area: "West Coast / Clementi South", district: "D05 (West Coast)", type: "AYE West Corridor Interface", rate: 0.072, bars: 3.4, elderly: 15.6, road: "expressway_merge", note: "AYE expressway merge shockwaves" },
+      "13": { lat: 1.3000, lng: 103.7900, area: "Clementi Central / West Coast", district: "D05 (Clementi)", type: "Transit Hub & Arterial", rate: 0.060, bars: 5.2, elderly: 18.9, road: "arterial_4way", note: "Silver Zone around Clementi Town Centre" },
 
       // D06 (Clarke Quay, High Street)
-      "17": { area: "Clarke Quay / Riverside / High Street", district: "D06 (Clarke Quay)", type: "Nightlife Belt & Bar Cluster", rate: 0.078, bars: 48.5, elderly: 9.0, road: "arterial_4way", note: "Highest post-midnight alcohol crash concentration islandwide" },
+      "17": { lat: 1.2910, lng: 103.8490, area: "Clarke Quay / Riverside / High Street", district: "D06 (Clarke Quay)", type: "Nightlife Belt & Bar Cluster", rate: 0.078, bars: 48.5, elderly: 9.0, road: "arterial_4way", note: "Highest post-midnight alcohol crash concentration islandwide" },
 
       // D07 (Bugis, Middle Road, Beach Road)
-      "18": { area: "Middle Road / Golden Mile", district: "D07 (Middle Rd)", type: "Commercial Entertainment", rate: 0.064, bars: 26.2, elderly: 13.0, road: "arterial_4way", note: "Nocturnal eatery & pub foot-traffic" },
-      "19": { area: "Bugis / Bras Basah / Bencoolen", district: "D07 (Bugis)", type: "Arts & Retail Pedestrian Grid", rate: 0.057, bars: 19.8, elderly: 11.5, road: "arterial_4way", note: "High pedestrian signal compliance friction" },
+      "18": { lat: 1.2980, lng: 103.8540, area: "Middle Road / Golden Mile", district: "D07 (Middle Rd)", type: "Commercial Entertainment", rate: 0.064, bars: 26.2, elderly: 13.0, road: "arterial_4way", note: "Nocturnal eatery & pub foot-traffic" },
+      "19": { lat: 1.3020, lng: 103.8590, area: "Bugis / Bras Basah / Bencoolen", district: "D07 (Bugis)", type: "Arts & Retail Pedestrian Grid", rate: 0.057, bars: 19.8, elderly: 11.5, road: "arterial_4way", note: "High pedestrian signal compliance friction" },
 
       // D08 (Little India, Farrer Park)
-      "20": { area: "Little India / Serangoon Road", district: "D08 (Little India)", type: "High-Density Heritage Pedestrian", rate: 0.071, bars: 14.5, elderly: 14.2, road: "arterial_4way", note: "Dense weekend foot traffic & commercial loading" },
-      "21": { area: "Farrer Park / Lavender", district: "D08 (Farrer Park)", type: "Mixed Arterial Grid", rate: 0.061, bars: 12.0, elderly: 16.8, road: "arterial_4way", note: "High motorcycle delivery conflict" },
+      "20": { lat: 1.3080, lng: 103.8570, area: "Little India / Serangoon Road", district: "D08 (Little India)", type: "High-Density Heritage Pedestrian", rate: 0.071, bars: 14.5, elderly: 14.2, road: "arterial_4way", note: "Dense weekend foot traffic & commercial loading" },
+      "21": { lat: 1.3120, lng: 103.8540, area: "Farrer Park / Lavender", district: "D08 (Farrer Park)", type: "Mixed Arterial Grid", rate: 0.061, bars: 12.0, elderly: 16.8, road: "arterial_4way", note: "High motorcycle delivery conflict" },
 
       // D09 (Orchard, River Valley, Somerset)
-      "22": { area: "Orchard Road / Cairnhill", district: "D09 (Orchard)", type: "Retail Belt & Supercar Locus", rate: 0.059, bars: 29.8, elderly: 10.0, road: "arterial_4way", note: "High-torque sports coupe & wet night loss-of-control" },
-      "23": { area: "River Valley / Somerset", district: "D09 (River Valley)", type: "Residential & Nightlife Fringe", rate: 0.058, bars: 21.0, elderly: 10.8, road: "arterial_4way", note: "Curving descent arterials to CTE tunnel" },
+      "22": { lat: 1.3030, lng: 103.8370, area: "Orchard Road / Cairnhill", district: "D09 (Orchard)", type: "Retail Belt & Supercar Locus", rate: 0.059, bars: 29.8, elderly: 10.0, road: "arterial_4way", note: "High-torque sports coupe & wet night loss-of-control" },
+      "23": { lat: 1.3010, lng: 103.8390, area: "River Valley / Somerset", district: "D09 (River Valley)", type: "Residential & Nightlife Fringe", rate: 0.058, bars: 21.0, elderly: 10.8, road: "arterial_4way", note: "Curving descent arterials to CTE tunnel" },
 
       // D10 (Tanglin, Holland, Bukit Timah)
-      "24": { area: "Tanglin / Napier Road", district: "D10 (Tanglin)", type: "Embassy Belt & Arterial", rate: 0.049, bars: 8.5, elderly: 12.2, road: "standard_straight", note: "Gleneagles hospital ambulance corridor" },
-      "25": { area: "Holland Village / Sixth Avenue", district: "D10 (Holland)", type: "Dining Belt & Residential", rate: 0.055, bars: 18.6, elderly: 13.0, road: "t_junction_3way", note: "Evening dining pedestrian friction" },
-      "26": { area: "Bukit Timah / Dunearn Corridor", district: "D10 (Bukit Timah)", type: "School Zone Corridor", rate: 0.052, bars: 5.2, elderly: 14.0, road: "arterial_4way", note: "Heavy morning SUV queues & school drop-offs" },
-      "27": { area: "Holland Road / Ulu Pandan", district: "D10 (Holland)", type: "Residential Arterial", rate: 0.050, bars: 4.1, elderly: 15.2, road: "standard_straight", note: "High-speed arterial with discrete signalized turns" },
+      "24": { lat: 1.3050, lng: 103.8280, area: "Tanglin / Napier Road", district: "D10 (Tanglin)", type: "Embassy Belt & Arterial", rate: 0.049, bars: 8.5, elderly: 12.2, road: "standard_straight", note: "Gleneagles hospital ambulance corridor" },
+      "25": { lat: 1.3140, lng: 103.8210, area: "Holland Village / Sixth Avenue", district: "D10 (Holland)", type: "Dining Belt & Residential", rate: 0.055, bars: 18.6, elderly: 13.0, road: "t_junction_3way", note: "Evening dining pedestrian friction" },
+      "26": { lat: 1.3200, lng: 103.8120, area: "Bukit Timah / Dunearn Corridor", district: "D10 (Bukit Timah)", type: "School Zone Corridor", rate: 0.052, bars: 5.2, elderly: 14.0, road: "arterial_4way", note: "Heavy morning SUV queues & school drop-offs" },
+      "27": { lat: 1.3130, lng: 103.7930, area: "Holland Road / Ulu Pandan", district: "D10 (Holland)", type: "Residential Arterial", rate: 0.050, bars: 4.1, elderly: 15.2, road: "standard_straight", note: "High-speed arterial with discrete signalized turns" },
 
       // D11 (Novena, Newton, Thomson)
-      "28": { area: "Newton / Dunearn Flyover", district: "D11 (Newton)", type: "Flyover & Expressway Interface", rate: 0.063, bars: 11.2, elderly: 13.8, road: "expressway_merge", note: "CTE tunnel entrance & Bukit Timah flyover merges" },
-      "29": { area: "Novena / Medical Hub", district: "D11 (Novena)", type: "Healthcare Precinct & Arterial", rate: 0.054, bars: 7.8, elderly: 18.5, road: "arterial_4way", note: "Ambulance movements & senior outpatient traffic" },
-      "30": { area: "Balestier / Moulmein", district: "D11 (Balestier)", type: "Arterial Mixed Dining", rate: 0.061, bars: 14.8, elderly: 20.1, road: "arterial_4way", note: "Mature estate senior jaywalking hazards" },
+      "28": { lat: 1.3080, lng: 103.7740, area: "Newton / Dunearn Flyover", district: "D11 (Newton)", type: "Flyover & Expressway Interface", rate: 0.063, bars: 11.2, elderly: 13.8, road: "expressway_merge", note: "CTE tunnel entrance & Bukit Timah flyover merges" },
+      "29": { lat: 1.3190, lng: 103.8430, area: "Novena / Medical Hub", district: "D11 (Novena)", type: "Healthcare Precinct & Arterial", rate: 0.054, bars: 7.8, elderly: 18.5, road: "arterial_4way", note: "Ambulance movements & senior outpatient traffic" },
+      "30": { lat: 1.3230, lng: 103.8490, area: "Balestier / Moulmein", district: "D11 (Balestier)", type: "Arterial Mixed Dining", rate: 0.061, bars: 14.8, elderly: 20.1, road: "arterial_4way", note: "Mature estate senior jaywalking hazards" },
 
       // D12 (Toa Payoh, Balestier)
-      "31": { area: "Toa Payoh Central / Lorong 1-6", district: "D12 (Toa Payoh)", type: "Mature Senior Town (Silver Zone)", rate: 0.058, bars: 4.1, elderly: 26.0, road: "silver_zone", note: "Rank #1 elderly pedestrian knockdown hazard; Silver Zones implemented" },
-      "32": { area: "Balestier Road / Whampoa", district: "D12 (Balestier)", type: "Eatery Corridor & Senior Grid", rate: 0.063, bars: 16.4, elderly: 22.8, road: "arterial_4way", note: "Senior jaywalking between traditional food centres" },
-      "33": { area: "Potong Pasir / Sennett", district: "D12 (Potong Pasir)", type: "Residential Arterial", rate: 0.048, bars: 3.2, elderly: 16.5, road: "standard_straight", note: "PIE & Upper Serangoon Road sliproad" },
+      "31": { lat: 1.3340, lng: 103.8490, area: "Toa Payoh Central / Lorong 1-6", district: "D12 (Toa Payoh)", type: "Mature Senior Town (Silver Zone)", rate: 0.058, bars: 4.1, elderly: 26.0, road: "silver_zone", note: "Rank #1 elderly pedestrian knockdown hazard; Silver Zones implemented" },
+      "32": { lat: 1.3260, lng: 103.8540, area: "Balestier Road / Whampoa", district: "D12 (Balestier)", type: "Eatery Corridor & Senior Grid", rate: 0.063, bars: 16.4, elderly: 22.8, road: "arterial_4way", note: "Senior jaywalking between traditional food centres" },
+      "33": { lat: 1.3320, lng: 103.8670, area: "Potong Pasir / Sennett", district: "D12 (Potong Pasir)", type: "Residential Arterial", rate: 0.048, bars: 3.2, elderly: 16.5, road: "standard_straight", note: "PIE & Upper Serangoon Road sliproad" },
 
       // D13 (MacPherson, Braddell)
-      "34": { area: "MacPherson / Circuit Road", district: "D13 (MacPherson)", type: "Mature Estate & Silver Zone", rate: 0.057, bars: 6.2, elderly: 24.8, road: "silver_zone", note: "Silver Zone along Circuit Road; senior resident density" },
-      "35": { area: "Potong Pasir / MacPherson Link", district: "D13 (Potong Pasir)", type: "Industrial-Residential Link", rate: 0.055, bars: 4.8, elderly: 17.0, road: "arterial_4way", note: "PIE expressway exit shockwaves" },
-      "36": { area: "Braddell / Upper Aljunied", district: "D13 (Braddell)", type: "Expressway Flyover Interface", rate: 0.068, bars: 5.1, elderly: 15.2, road: "expressway_merge", note: "CTE / PIE interchange weaving hazard" },
-      "37": { area: "Aljunied / MacPherson Industrial", district: "D13 (Aljunied)", type: "Light Industrial Arterial", rate: 0.060, bars: 8.5, elderly: 16.0, road: "arterial_4way", note: "Commercial van & motorcycle conflict" },
+      "34": { lat: 1.3280, lng: 103.8820, area: "MacPherson / Circuit Road", district: "D13 (MacPherson)", type: "Mature Estate & Silver Zone", rate: 0.057, bars: 6.2, elderly: 24.8, road: "silver_zone", note: "Silver Zone along Circuit Road; senior resident density" },
+      "35": { lat: 1.3340, lng: 103.8790, area: "Potong Pasir / MacPherson Link", district: "D13 (Potong Pasir)", type: "Industrial-Residential Link", rate: 0.055, bars: 4.8, elderly: 17.0, road: "arterial_4way", note: "PIE expressway exit shockwaves" },
+      "36": { lat: 1.3410, lng: 103.8740, area: "Braddell / Upper Aljunied", district: "D13 (Braddell)", type: "Expressway Flyover Interface", rate: 0.068, bars: 5.1, elderly: 15.2, road: "expressway_merge", note: "CTE / PIE interchange weaving hazard" },
+      "37": { lat: 1.3320, lng: 103.8890, area: "Aljunied / MacPherson Industrial", district: "D13 (Aljunied)", type: "Light Industrial Arterial", rate: 0.060, bars: 8.5, elderly: 16.0, road: "arterial_4way", note: "Commercial van & motorcycle conflict" },
 
       // D14 (Geylang, Eunos, Paya Lebar)
-      "38": { area: "Geylang / Sims Avenue", district: "D14 (Geylang)", type: "Nocturnal Arterial Grid", rate: 0.071, bars: 31.2, elderly: 19.0, road: "arterial_4way", note: "Late night eateries, cyclists, and dense jaywalking" },
-      "39": { area: "Geylang Lorongs 1-40", district: "D14 (Geylang)", type: "Narrow Lanes & Bar Belt", rate: 0.074, bars: 35.8, elderly: 18.2, road: "t_junction_3way", note: "High pedestrian-motorcycle sideswipes" },
-      "40": { area: "Paya Lebar / Ubi Industrial", district: "D14 (Paya Lebar)", type: "Commercial & Industrial Hub", rate: 0.062, bars: 9.2, elderly: 14.0, road: "arterial_4way", note: "Heavy delivery vans & PIE sliproad merge" },
-      "41": { area: "Eunos / Kaki Bukit", district: "D14 (Eunos)", type: "Industrial Logistics Artery", rate: 0.065, bars: 4.8, elderly: 17.5, road: "standard_straight", note: "Heavy vehicle turning radii & worker transport lorries" },
+      "38": { lat: 1.3160, lng: 103.8830, area: "Geylang / Sims Avenue", district: "D14 (Geylang)", type: "Nocturnal Arterial Grid", rate: 0.071, bars: 31.2, elderly: 19.0, road: "arterial_4way", note: "Late night eateries, cyclists, and dense jaywalking" },
+      "39": { lat: 1.3140, lng: 103.8880, area: "Geylang Lorongs 1-40", district: "D14 (Geylang)", type: "Narrow Lanes & Bar Belt", rate: 0.074, bars: 35.8, elderly: 18.2, road: "t_junction_3way", note: "High pedestrian-motorcycle sideswipes" },
+      "40": { lat: 1.3240, lng: 103.8930, area: "Paya Lebar / Ubi Industrial", district: "D14 (Paya Lebar)", type: "Commercial & Industrial Hub", rate: 0.062, bars: 9.2, elderly: 14.0, road: "arterial_4way", note: "Heavy delivery vans & PIE sliproad merge" },
+      "41": { lat: 1.3320, lng: 103.9080, area: "Eunos / Kaki Bukit", district: "D14 (Eunos)", type: "Industrial Logistics Artery", rate: 0.065, bars: 4.8, elderly: 17.5, road: "standard_straight", note: "Heavy vehicle turning radii & worker transport lorries" },
 
       // D15 (Katong, Joo Chiat, Marine Parade)
-      "42": { area: "Katong / Mountbatten", district: "D15 (Katong)", type: "Coastal Arterial Corridor", rate: 0.053, bars: 14.5, elderly: 16.2, road: "standard_straight", note: "ECP expressway transition & school traffic" },
-      "43": { area: "Joo Chiat / East Coast Road", district: "D15 (Joo Chiat)", type: "Heritage Dining Belt", rate: 0.059, bars: 24.8, elderly: 17.0, road: "arterial_4way", note: "Evening valet parking friction & pedestrian jaywalk" },
-      "44": { area: "Marine Parade / Parkway", district: "D15 (Marine Parade)", type: "Mature Coastal Estate", rate: 0.056, bars: 9.1, elderly: 23.5, road: "silver_zone", note: "Silver Zone active; high senior population to wet market" },
-      "45": { area: "Tanjong Rhu / Meyer Road", district: "D15 (Tanjong Rhu)", type: "Residential Coastal Enclave", rate: 0.046, bars: 3.5, elderly: 12.0, road: "standard_straight", note: "ECP Fort Road exit shockwaves" },
+      "42": { lat: 1.3060, lng: 103.8960, area: "Katong / Mountbatten", district: "D15 (Katong)", type: "Coastal Arterial Corridor", rate: 0.053, bars: 14.5, elderly: 16.2, road: "standard_straight", note: "ECP expressway transition & school traffic" },
+      "43": { lat: 1.3100, lng: 103.9040, area: "Joo Chiat / East Coast Road", district: "D15 (Joo Chiat)", type: "Heritage Dining Belt", rate: 0.059, bars: 24.8, elderly: 17.0, road: "arterial_4way", note: "Evening valet parking friction & pedestrian jaywalk" },
+      "44": { lat: 1.3020, lng: 103.9050, area: "Marine Parade / Parkway", district: "D15 (Marine Parade)", type: "Mature Coastal Estate", rate: 0.056, bars: 9.1, elderly: 23.5, road: "silver_zone", note: "Silver Zone active; high senior population to wet market" },
+      "45": { lat: 1.2990, lng: 103.8850, area: "Tanjong Rhu / Meyer Road", district: "D15 (Tanjong Rhu)", type: "Residential Coastal Enclave", rate: 0.046, bars: 3.5, elderly: 12.0, road: "standard_straight", note: "ECP Fort Road exit shockwaves" },
 
       // D16 (Bedok, Upper East Coast)
-      "46": { area: "Bedok South / Upper East Coast", district: "D16 (Bedok)", type: "Mature HDB Grid & Silver Zone", rate: 0.057, bars: 6.2, elderly: 24.0, road: "silver_zone", note: "Silver Zone active along Bedok South Ave 1-2" },
-      "47": { area: "Bedok North / Reservoir", district: "D16 (Bedok)", type: "PIE Expressway Arterial Link", rate: 0.066, bars: 5.5, elderly: 21.5, road: "expressway_merge", note: "PIE Bedok North exit sudden deceleration" },
-      "48": { area: "Tanah Merah / Bayshore", district: "D16 (Tanah Merah)", type: "Coastal Transit Arterial", rate: 0.051, bars: 4.0, elderly: 15.0, road: "standard_straight", note: "ECP / PIE junction feeder" },
+      "46": { lat: 1.3210, lng: 103.9350, area: "Bedok South / Upper East Coast", district: "D16 (Bedok)", type: "Mature HDB Grid & Silver Zone", rate: 0.057, bars: 6.2, elderly: 24.0, road: "silver_zone", note: "Silver Zone active along Bedok South Ave 1-2" },
+      "47": { lat: 1.3340, lng: 103.9310, area: "Bedok North / Reservoir", district: "D16 (Bedok)", type: "PIE Expressway Arterial Link", rate: 0.066, bars: 5.5, elderly: 21.5, road: "expressway_merge", note: "PIE Bedok North exit sudden deceleration" },
+      "48": { lat: 1.3280, lng: 103.9480, area: "Tanah Merah / Bayshore", district: "D16 (Tanah Merah)", type: "Coastal Transit Arterial", rate: 0.051, bars: 4.0, elderly: 15.0, road: "standard_straight", note: "ECP / PIE junction feeder" },
 
       // D17 (Changi, Loyang, Airport)
-      "49": { area: "Loyang / Pasir Ris East", district: "D17 (Loyang)", type: "Industrial Logistics & Freight", rate: 0.068, bars: 2.5, elderly: 11.2, road: "standard_straight", note: "Heavy container logistics & airport cargo links" },
-      "50": { area: "Changi Village / Coastal", district: "D17 (Changi)", type: "Coastal Leisure & Bus Terminal", rate: 0.052, bars: 8.4, elderly: 13.5, road: "t_junction_3way", note: "Weekend cyclist & weekend motorist speed friction" },
-      "81": { area: "Changi Airport / Aviation Sector", district: "D17 (Airport)", type: "Expressway Terminal (PIE/ECP/TPE)", rate: 0.049, bars: 12.0, elderly: 6.5, road: "standard_straight", note: "High-speed airport approaches & taxi fleet queues" },
+      "49": { lat: 1.3650, lng: 103.9740, area: "Loyang / Pasir Ris East", district: "D17 (Loyang)", type: "Industrial Logistics & Freight", rate: 0.068, bars: 2.5, elderly: 11.2, road: "standard_straight", note: "Heavy container logistics & airport cargo links" },
+      "50": { lat: 1.3890, lng: 103.9870, area: "Changi Village / Coastal", district: "D17 (Changi)", type: "Coastal Leisure & Bus Terminal", rate: 0.052, bars: 8.4, elderly: 13.5, road: "t_junction_3way", note: "Weekend cyclist & weekend motorist speed friction" },
+      "81": { lat: 1.3590, lng: 103.9890, area: "Changi Airport / Aviation Sector", district: "D17 (Airport)", type: "Expressway Terminal (PIE/ECP/TPE)", rate: 0.049, bars: 12.0, elderly: 6.5, road: "standard_straight", note: "High-speed airport approaches & taxi fleet queues" },
 
       // D18 (Tampines, Pasir Ris)
-      "51": { area: "Pasir Ris Town / Drive 1-3", district: "D18 (Pasir Ris)", type: "Residential Town Arterial", rate: 0.058, bars: 3.2, elderly: 14.8, road: "arterial_4way", note: "TPE Pasir Ris exit morning queue spillover" },
-      "52": { area: "Tampines Regional Centre / Ave 10", district: "D18 (Tampines)", type: "High-Volume Hub (Blackspot #7)", rate: 0.066, bars: 3.4, elderly: 16.0, road: "arterial_4way", note: "Multi-lane arterial linking industrial estate; discretionary turns" },
+      "51": { lat: 1.3720, lng: 103.9490, area: "Pasir Ris Town / Drive 1-3", district: "D18 (Pasir Ris)", type: "Residential Town Arterial", rate: 0.058, bars: 3.2, elderly: 14.8, road: "arterial_4way", note: "TPE Pasir Ris exit morning queue spillover" },
+      "52": { lat: 1.3530, lng: 103.9450, area: "Tampines Regional Centre / Ave 10", district: "D18 (Tampines)", type: "High-Volume Hub (Blackspot #7)", rate: 0.066, bars: 3.4, elderly: 16.0, road: "arterial_4way", note: "Multi-lane arterial linking industrial estate; discretionary turns" },
 
       // D19 (Serangoon, Hougang, Punggol, Sengkang)
-      "53": { area: "Serangoon Central / NEX Hub", district: "D19 (Serangoon)", type: "Major Transit Hub & Arterial", rate: 0.064, bars: 8.5, elderly: 19.5, road: "arterial_4way", note: "Bus interchange exit pedestrian conflict & CTE feeder" },
-      "54": { area: "Hougang Central / Ave 2-8", district: "D19 (Hougang)", type: "Mature Estate (Silver Zone)", rate: 0.060, bars: 4.8, elderly: 22.0, road: "silver_zone", note: "Silver Zone active; high elderly foot-traffic" },
-      "55": { area: "Serangoon Garden / Chomp Chomp", district: "D19 (Serangoon)", type: "Dining Enclave & Narrow Grid", rate: 0.059, bars: 21.5, elderly: 18.0, road: "t_junction_3way", note: "Severe evening parking friction & turning conflicts" },
-      "82": { area: "Punggol Central / TPE Merge", district: "D19 (Punggol)", type: "Rank #1 Blackspot (Expressway Merge)", rate: 0.084, bars: 1.8, elderly: 11.0, road: "expressway_merge", note: "Band 7 free-flow meets congestion; highest motorcycle filtering accidents" },
+      "53": { lat: 1.3500, lng: 103.8730, area: "Serangoon Central / NEX Hub", district: "D19 (Serangoon)", type: "Major Transit Hub & Arterial", rate: 0.064, bars: 8.5, elderly: 19.5, road: "arterial_4way", note: "Bus interchange exit pedestrian conflict & CTE feeder" },
+      "54": { lat: 1.3710, lng: 103.8920, area: "Hougang Central / Ave 2-8", district: "D19 (Hougang)", type: "Mature Estate (Silver Zone)", rate: 0.060, bars: 4.8, elderly: 22.0, road: "silver_zone", note: "Silver Zone active; high elderly foot-traffic" },
+      "55": { lat: 1.3620, lng: 103.8660, area: "Serangoon Garden / Chomp Chomp", district: "D19 (Serangoon)", type: "Dining Enclave & Narrow Grid", rate: 0.059, bars: 21.5, elderly: 18.0, road: "t_junction_3way", note: "Severe evening parking friction & turning conflicts" },
+      "82": { lat: 1.4020, lng: 103.9070, area: "Punggol Central / TPE Merge", district: "D19 (Punggol)", type: "Rank #1 Blackspot (Expressway Merge)", rate: 0.084, bars: 1.8, elderly: 11.0, road: "expressway_merge", note: "Band 7 free-flow meets congestion; highest motorcycle filtering accidents" },
 
       // D20 (Bishan, Ang Mo Kio)
-      "56": { area: "Bishan / CTE Braddell Interchange", district: "D20 (Bishan)", type: "CTE Blackspot #4 / Expressway", rate: 0.074, bars: 2.9, elderly: 21.0, road: "expressway_merge", note: "Sudden deceleration shockwaves & multi-vehicle pileups" },
-      "57": { area: "Ang Mo Kio Central / Ave 1-8", district: "D20 (Ang Mo Kio)", type: "Mature HDB Grid (Silver Zone)", rate: 0.062, bars: 5.2, elderly: 25.4, road: "silver_zone", note: "AMK Ave 3 Silver Zone; senior citizen pedestrian vulnerability" },
+      "56": { lat: 1.3510, lng: 103.8500, area: "Bishan / CTE Braddell Interchange", district: "D20 (Bishan)", type: "CTE Blackspot #4 / Expressway", rate: 0.074, bars: 2.9, elderly: 21.0, road: "expressway_merge", note: "Sudden deceleration shockwaves & multi-vehicle pileups" },
+      "57": { lat: 1.3690, lng: 103.8450, area: "Ang Mo Kio Central / Ave 1-8", district: "D20 (Ang Mo Kio)", type: "Mature HDB Grid (Silver Zone)", rate: 0.062, bars: 5.2, elderly: 25.4, road: "silver_zone", note: "AMK Ave 3 Silver Zone; senior citizen pedestrian vulnerability" },
 
       // D21 (Upper Bukit Timah, Clementi Park)
-      "58": { area: "Upper Bukit Timah / Beauty World", district: "D21 (Bukit Timah)", type: "Transit Arterial & Food Belt", rate: 0.055, bars: 9.8, elderly: 16.5, road: "arterial_4way", note: "PIE exit & pedestrian crossing conflicts" },
-      "59": { area: "Hillview / Dairy Farm", district: "D21 (Hillview)", type: "Residential Arterial", rate: 0.048, bars: 2.2, elderly: 13.0, road: "standard_straight", note: "Curving grade transitions" },
+      "58": { lat: 1.3420, lng: 103.7760, area: "Upper Bukit Timah / Beauty World", district: "D21 (Bukit Timah)", type: "Transit Arterial & Food Belt", rate: 0.055, bars: 9.8, elderly: 16.5, road: "arterial_4way", note: "PIE exit & pedestrian crossing conflicts" },
+      "59": { lat: 1.3600, lng: 103.7680, area: "Hillview / Dairy Farm", district: "D21 (Hillview)", type: "Residential Arterial", rate: 0.048, bars: 2.2, elderly: 13.0, road: "standard_straight", note: "Curving grade transitions" },
 
       // D22 (Jurong, Tuas, Boon Lay, Pioneer)
-      "60": { area: "Jurong East Central / Regional Hub", district: "D22 (Jurong East)", type: "Major Commercial Hub & AYE link", rate: 0.067, bars: 6.8, elderly: 17.2, road: "arterial_4way", note: "AYE Jurong Town Hall exit deceleration shockwave" },
-      "61": { area: "Jurong West / Boon Lay", district: "D22 (Jurong West)", type: "Dense Town & Silver Zone", rate: 0.063, bars: 3.5, elderly: 18.0, road: "silver_zone", note: "Silver Zone along Corporation Road" },
-      "62": { area: "Jurong Industrial Estate / Pioneer", district: "D22 (Pioneer)", type: "Heavy Freight Logistics Hub", rate: 0.073, bars: 1.2, elderly: 8.5, road: "standard_straight", note: "Prime-mover container trucks & severe braking mass disparity" },
-      "63": { area: "Tuas Industrial / Mega Port", district: "D22 (Tuas)", type: "Tuas Logistics Blackspot #3", rate: 0.076, bars: 0.8, elderly: 5.0, road: "standard_straight", note: "Heavy prime-movers & tippers; severe wet-weather braking disparity" },
-      "64": { area: "Tuas South / Checkpoint Approach", district: "D22 (Tuas)", type: "Second Link Cross-Border Freight", rate: 0.075, bars: 0.5, elderly: 4.2, road: "expressway_merge", note: "High cross-border trailer truck & motorcycle density" },
+      "60": { lat: 1.3330, lng: 103.7430, area: "Jurong East Central / Regional Hub", district: "D22 (Jurong East)", type: "Major Commercial Hub & AYE link", rate: 0.067, bars: 6.8, elderly: 17.2, road: "arterial_4way", note: "AYE Jurong Town Hall exit deceleration shockwave" },
+      "61": { lat: 1.3400, lng: 103.7050, area: "Jurong West / Boon Lay", district: "D22 (Jurong West)", type: "Dense Town & Silver Zone", rate: 0.063, bars: 3.5, elderly: 18.0, road: "silver_zone", note: "Silver Zone along Corporation Road" },
+      "62": { lat: 1.3250, lng: 103.6880, area: "Jurong Industrial Estate / Pioneer", district: "D22 (Pioneer)", type: "Heavy Freight Logistics Hub", rate: 0.073, bars: 1.2, elderly: 8.5, road: "standard_straight", note: "Prime-mover container trucks & severe braking mass disparity" },
+      "63": { lat: 1.3180, lng: 103.6500, area: "Tuas Industrial / Mega Port", district: "D22 (Tuas)", type: "Tuas Logistics Blackspot #3", rate: 0.076, bars: 0.8, elderly: 5.0, road: "standard_straight", note: "Heavy prime-movers & tippers; severe wet-weather braking disparity" },
+      "64": { lat: 1.3300, lng: 103.6360, area: "Tuas South / Checkpoint Approach", district: "D22 (Tuas)", type: "Second Link Cross-Border Freight", rate: 0.075, bars: 0.5, elderly: 4.2, road: "expressway_merge", note: "High cross-border trailer truck & motorcycle density" },
 
       // D23 (Choa Chu Kang, Bukit Panjang, Bukit Batok)
-      "65": { area: "Bukit Batok Central / East", district: "D23 (Bukit Batok)", type: "Mature Estate (Silver Zone)", rate: 0.059, bars: 4.1, elderly: 21.0, road: "silver_zone", note: "Silver Zone active; mature estate arterial" },
-      "66": { area: "Bukit Batok West / Industrial", district: "D23 (Bukit Batok)", type: "Light Industrial Arterial", rate: 0.062, bars: 3.0, elderly: 16.5, road: "arterial_4way", note: "Commercial vans & PIE link" },
-      "67": { area: "Bukit Panjang Central / Ring Rd", district: "D23 (Bukit Panjang)", type: "HDB Arterial & BKE feeder", rate: 0.061, bars: 2.8, elderly: 19.2, road: "silver_zone", note: "Silver Zone implemented; senior LRT crossing points" },
-      "68": { area: "Choa Chu Kang Central / Yew Tee", district: "D23 (Choa Chu Kang)", type: "Dense Town & KJE Interface", rate: 0.063, bars: 3.2, elderly: 15.0, road: "arterial_4way", note: "KJE expressway sliproad congestion" },
+      "65": { lat: 1.3590, lng: 103.7520, area: "Bukit Batok Central / East", district: "D23 (Bukit Batok)", type: "Mature Estate (Silver Zone)", rate: 0.059, bars: 4.1, elderly: 21.0, road: "silver_zone", note: "Silver Zone active; mature estate arterial" },
+      "66": { lat: 1.3520, lng: 103.7440, area: "Bukit Batok West / Industrial", district: "D23 (Bukit Batok)", type: "Light Industrial Arterial", rate: 0.062, bars: 3.0, elderly: 16.5, road: "arterial_4way", note: "Commercial vans & PIE link" },
+      "67": { lat: 1.3780, lng: 103.7620, area: "Bukit Panjang Central / Ring Rd", district: "D23 (Bukit Panjang)", type: "HDB Arterial & BKE feeder", rate: 0.061, bars: 2.8, elderly: 19.2, road: "silver_zone", note: "Silver Zone implemented; senior LRT crossing points" },
+      "68": { lat: 1.3850, lng: 103.7450, area: "Choa Chu Kang Central / Yew Tee", district: "D23 (Choa Chu Kang)", type: "Dense Town & KJE Interface", rate: 0.063, bars: 3.2, elderly: 15.0, road: "arterial_4way", note: "KJE expressway sliproad congestion" },
 
       // D24 (Lim Chu Kang, Tengah)
-      "69": { area: "Tengah New Town / Plantation", district: "D24 (Tengah)", type: "Developing Eco-Town & Construction", rate: 0.058, bars: 0.5, elderly: 8.0, road: "standard_straight", note: "Heavy construction vehicle traffic & developing arterial grid" },
-      "70": { area: "Lim Chu Kang / Agrotechnology", district: "D24 (Lim Chu Kang)", type: "Rural High-Speed Single Carriageway", rate: 0.051, bars: 0.2, elderly: 10.0, road: "standard_straight", note: "Unlit rural corridors & tractor turning friction" },
-      "71": { area: "Kranji / Neo Tiew", district: "D24 (Kranji)", type: "Agro-Industrial & Turf Club", rate: 0.056, bars: 1.5, elderly: 11.5, road: "t_junction_3way", note: "Heavy tipper trucks & rural bends" },
+      "69": { lat: 1.3570, lng: 103.7290, area: "Tengah New Town / Plantation", district: "D24 (Tengah)", type: "Developing Eco-Town & Construction", rate: 0.058, bars: 0.5, elderly: 8.0, road: "standard_straight", note: "Heavy construction vehicle traffic & developing arterial grid" },
+      "70": { lat: 1.4280, lng: 103.7060, area: "Lim Chu Kang / Agrotechnology", district: "D24 (Lim Chu Kang)", type: "Rural High-Speed Single Carriageway", rate: 0.051, bars: 0.2, elderly: 10.0, road: "standard_straight", note: "Unlit rural corridors & tractor turning friction" },
+      "71": { lat: 1.4260, lng: 103.7480, area: "Kranji / Neo Tiew", district: "D24 (Kranji)", type: "Agro-Industrial & Turf Club", rate: 0.056, bars: 1.5, elderly: 11.5, road: "t_junction_3way", note: "Heavy tipper trucks & rural bends" },
 
       // D25 (Woodlands, Marsiling, Admiralty)
-      "72": { area: "Woodlands Central / Admiralty", district: "D25 (Woodlands)", type: "Cross-Border Transit Hub", rate: 0.068, bars: 3.8, elderly: 15.5, road: "arterial_4way", note: "SLE/BKE connector & heavy bus frequency" },
-      "73": { area: "BKE Woodlands Causeway Approach", district: "D25 (Woodlands)", type: "Rank #2 Blackspot (Causeway)", rate: 0.079, bars: 2.4, elderly: 13.0, road: "expressway_merge", note: "Cross-border motorcycle volume, checkpoint bottleneck speed drop" },
+      "72": { lat: 1.4380, lng: 103.7860, area: "Woodlands Central / Admiralty", district: "D25 (Woodlands)", type: "Cross-Border Transit Hub", rate: 0.068, bars: 3.8, elderly: 15.5, road: "arterial_4way", note: "SLE/BKE connector & heavy bus frequency" },
+      "73": { lat: 1.4420, lng: 103.7740, area: "BKE Woodlands Causeway Approach", district: "D25 (Woodlands)", type: "Rank #2 Blackspot (Causeway)", rate: 0.079, bars: 2.4, elderly: 13.0, road: "expressway_merge", note: "Cross-border motorcycle volume, checkpoint bottleneck speed drop" },
 
       // D26 (Mandai, Upper Thomson)
-      "77": { area: "Upper Thomson / Springleaf", district: "D26 (Upper Thomson)", type: "Arterial Dining & SLE feeder", rate: 0.054, bars: 9.5, elderly: 15.2, road: "standard_straight", note: "High-speed straight arterial with discrete U-turns" },
-      "78": { area: "Mandai / Zoo Corridor", district: "D26 (Mandai)", type: "Undulating Rural Highway", rate: 0.052, bars: 1.0, elderly: 9.0, road: "standard_straight", note: "Curving nocturnal wildlife corridor & tourist coaches" },
+      "77": { lat: 1.3980, lng: 103.8180, area: "Upper Thomson / Springleaf", district: "D26 (Upper Thomson)", type: "Arterial Dining & SLE feeder", rate: 0.054, bars: 9.5, elderly: 15.2, road: "standard_straight", note: "High-speed straight arterial with discrete U-turns" },
+      "78": { lat: 1.4080, lng: 103.7890, area: "Mandai / Zoo Corridor", district: "D26 (Mandai)", type: "Undulating Rural Highway", rate: 0.052, bars: 1.0, elderly: 9.0, road: "standard_straight", note: "Curving nocturnal wildlife corridor & tourist coaches" },
 
       // D27 (Yishun, Sembawang)
-      "75": { area: "Yishun Central / Ring Road", district: "D27 (Yishun)", type: "Dense Town & Silver Zone", rate: 0.064, bars: 4.2, elderly: 22.5, road: "silver_zone", note: "Yishun Ring Road Silver Zone; senior mobility device friction" },
-      "76": { area: "Sembawang / Canberra", district: "D27 (Sembawang)", type: "Residential Coastal Arterial", rate: 0.056, bars: 2.9, elderly: 14.0, road: "arterial_4way", note: "Developing town arterials & shipyard transit buses" },
+      "75": { lat: 1.4300, lng: 103.8350, area: "Yishun Central / Ring Road", district: "D27 (Yishun)", type: "Dense Town & Silver Zone", rate: 0.064, bars: 4.2, elderly: 22.5, road: "silver_zone", note: "Yishun Ring Road Silver Zone; senior mobility device friction" },
+      "76": { lat: 1.4480, lng: 103.8260, area: "Sembawang / Canberra", district: "D27 (Sembawang)", type: "Residential Coastal Arterial", rate: 0.056, bars: 2.9, elderly: 14.0, road: "arterial_4way", note: "Developing town arterials & shipyard transit buses" },
 
       // D28 (Seletar, Sengkang West)
-      "79": { area: "Seletar Aerospace / Camp", district: "D28 (Seletar)", type: "Aviation Hub & TPE feeder", rate: 0.053, bars: 3.5, elderly: 9.0, road: "standard_straight", note: "TPE sliproad & cyclist pelotons on weekends" },
-      "80": { area: "Sengkang West / Fernvale", district: "D28 (Sengkang)", type: "Dense Residential Town", rate: 0.061, bars: 2.1, elderly: 12.5, road: "arterial_4way", note: "Morning school traffic & TPE connector queues" }
+      "79": { lat: 1.4110, lng: 103.8680, area: "Seletar Aerospace / Camp", district: "D28 (Seletar)", type: "Aviation Hub & TPE feeder", rate: 0.053, bars: 3.5, elderly: 9.0, road: "standard_straight", note: "TPE sliproad & cyclist pelotons on weekends" },
+      "80": { lat: 1.4190, lng: 103.8720, area: "Sengkang West / Fernvale", district: "D28 (Sengkang)", type: "Dense Residential Town", rate: 0.061, bars: 2.1, elderly: 12.5, road: "arterial_4way", note: "Morning school traffic & TPE connector queues" }
     };
 
     // ==========================================
@@ -2122,7 +2167,24 @@
         if (matchElem) matchElem.innerHTML = `📍 <b>Sector ${sectorPrefix}:</b> Singapore Arterial Urban Network`;
       }
 
-      // Update Slider Label Displays
+            // Dynamic live NEA station re-resolution if telemetry cache is active
+      if (latestNeaCache && latestNeaCache.readingMap) {
+        const loc = resolveLocationCoords(rawPostal);
+        const match = applyNeaStationMatch(latestNeaCache.readingMap, latestNeaCache.stationsList, loc.lat, loc.lng, loc.label);
+        const statusText = document.getElementById('neaStatusText');
+        const rainSlider = document.getElementById('calcRain');
+        
+        if (rainSlider && !rainSlider.dataset.manualOverride) {
+          rainSlider.value = Math.min(45, match.targetRain);
+        }
+        
+        if (statusText) {
+          const distInfo = match.distKm && parseFloat(match.distKm) < 50 ? ` (${match.distKm} km away)` : '';
+          statusText.innerHTML = `🟢 <b>${match.matchedStationName}:</b> ${match.targetRain.toFixed(1)} mm/hr (${match.targetRain > 0 ? 'Rain' : 'Dry'})${distInfo} &bull; ${latestNeaCache.stationCount} NEA Stations Live`;
+        }
+      }
+
+// Update Slider Label Displays
       const rainValElem = document.getElementById('rainVal');
       if (rainValElem) {
         rainValElem.textContent = rain === 0 ? "0 mm/hr (Dry)" : `${rain} mm/hr (${rain > 15 ? 'Convective Hydroplane' : 'Wet Oil Lift'})`;
