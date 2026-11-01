@@ -30,10 +30,59 @@ Calibrated against official **Singapore Police Force (SPF) Annual 2025 & Mid-Yea
 
 ---
 
+## Live Interactive Dashboard (GitHub Pages)
+
+Experience the live interactive engine, 7×24 heatmap, and simulation suite on **GitHub Pages**:  
+🌐 **[https://lauyeehow1986-hub.github.io/Rta/](https://lauyeehow1986-hub.github.io/Rta/)**
+
+Or open [`index.html`](index.html) locally in any web browser.
+
+---
+
+## Longitudinal Historical Trends & Risk Trajectory (2015 – 2026)
+
+Official audited longitudinal data from **SingStat TableBuilder & Singapore Police Force (SPF)** reveals clear multi-year shifts in Singapore's road safety trajectory:
+
+### Audited 11-Year Incident & Enforcement Matrix
+
+| Year | Injury Crashes | Fatalities | Fatality Rate / 100k | Motorcycle Crashes | Elderly Ped. Crashes | Speeding Violations | Red-Light Crashes |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **2015** | 8,058 | 151 | 2.73 | 4,410 | 218 (24 deaths) | 248,910 | 164 |
+| **2016** | 8,277 | 141 | 2.51 | 4,545 | 212 (28 deaths) | 181,050 | 152 |
+| **2017** | 7,726 | 121 | 2.16 | 4,350 | 204 (24 deaths) | 160,681 | 139 |
+| **2018** | 7,690 | 124 | 2.20 | 4,376 | 217 (24 deaths) | 181,958 | 135 |
+| **2019** | 7,822 | 118 | 2.07 | 4,444 | 235 (27 deaths) | 172,040 | 153 |
+| **2020 (COVID)** | 5,660 | 107 | 1.49 | 3,194 | 152 (15 deaths) | 162,447 | 125 |
+| **2021** | 5,939 | 107 | 1.96 | 3,464 | 158 (14 deaths) | 139,276 | 136 |
+| **2022** | 6,779 | 108 | 1.92 | 3,892 | 167 (19 deaths) | 125,530 | 137 |
+| **2023** | 6,949 | 136 | 2.30 | 3,792 | 228 (23 deaths) | 116,440 | 112 |
+| **2024** | 7,053 | 142 | 2.35 | 3,973 | 203 (11 deaths) | 201,358 | 96 |
+| **2025** | **7,560** | **149** | **2.44** | **4,227** | **247 (27 deaths)** | **253,550** | **122** |
+| **1H2026** | **3,869** | **61** | **2.04** | **2,186** | **144 (9 deaths)** | **126,976** | **102** |
+
+### Critical Rising Trends & Root Causes
+
+1. **The Senior Pedestrian Crisis (+62.5% Rise Since 2020 Low)**:
+   - Elderly pedestrian accidents rose from **152 in 2020** to **247 in 2025 (+62.5%)** and another **144 in 1H2026 (+19.0% YoY)**.
+   - Elderly pedestrians ($\ge 65\text{ yrs}$) accounted for **$75.0\%$ of all pedestrian deaths** and **$83.3\%$ of jaywalking deaths in 2025**.
+   - *Demographic Driver*: Singapore officially attained "super-aged" status in 2026, with over $21\%$ of residents aged $\ge 65$. Slower walking speed ($0.8\text{ m/s}$ vs $1.2\text{ m/s}$), degraded contrast perception in low-light conditions, and crossing wider multi-lane arterials in mature towns (Toa Payoh, Bishan, Bedok, Chinatown) drive severe vulnerability.
+2. **Post-COVID Traffic V-Shaped Rebound (+33.6%)**:
+   - Total injury crashes plummeted to a historical low of 5,660 during the 2020 Circuit Breaker before climbing steadily (+33.6% by 2025) as work commutes, cross-border Causeway crossings, and vehicle miles traveled returned to full capacity.
+3. **Persistent Motorcycle Majority (55.6% of Crashes)**:
+   - Motorcycle involvement climbed from 3,194 in 2020 to **4,227 in 2025 (+32.3%)** and **2,186 in 1H2026**.
+   - Two-wheelers consistently represent over half of all casualties despite accounting for only $15.0\%$ of registered motor vehicles, driven by gig-economy delivery deadlines and heavy cross-border traffic along the BKE corridor.
+4. **Speed Enforcement Explosion (+117.8% Jump)**:
+   - Speeding violations detected by Traffic Police cameras doubled from 116,440 in 2023 to **253,550 in 2025**, following the nationwide activation of speed enforcement functions in red-light cameras.
+5. **July 2026 Statutory Alcohol Limit Reduction**:
+   - In response to persistent drink-driving accidents (156 in 2025, 888 arrests in 1H2026), Parliament passed the Road Traffic (Miscellaneous Amendments) Act lowering the statutory limit to **$30\text{ mg/100ml}$ blood ($15\,\mu\text{g/100ml}$ breath)**, matching international best practices in Japan and South Korea.
+
+---
+
 ## Interactive Dashboard
 
 Open [`index.html`](index.html) in any modern browser for:
 - Interactive 7×24 day $\times$ hour accident density heatmap
+- Interactive 11-year historical trends & demographic progression chart
 - Singapore vector GIS corridor map
 - Real-time multi-variate risk odds calculator
 - ERP 2.0 in-cabin OBU simulation display

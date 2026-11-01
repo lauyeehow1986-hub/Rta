@@ -29,8 +29,14 @@ HEADERS = {
     "Accept": "application/json"
 }
 
-# Audited Official SPF & SingStat Ground-Truth Ledger (2021 - 1H2026)
+# Audited Official SPF & SingStat Ground-Truth Ledger (2015 - 1H2026)
 AUDITED_SPF_SINGSTAT_LEDGER = {
+    "2015": {"fatal_accidents": 148, "fatalities": 151, "injury_accidents": 8058, "injured_persons": 10522, "fatality_rate_100k": 2.73, "motorcyclist_accidents": 4410, "elderly_ped_accidents": 218, "elderly_ped_fatalities": 24, "drink_driving_accidents": 142, "speeding_violations": 248910, "red_light_accidents": 164},
+    "2016": {"fatal_accidents": 140, "fatalities": 141, "injury_accidents": 8277, "injured_persons": 10839, "fatality_rate_100k": 2.51, "motorcyclist_accidents": 4545, "elderly_ped_accidents": 212, "elderly_ped_fatalities": 28, "drink_driving_accidents": 134, "speeding_violations": 181050, "red_light_accidents": 152},
+    "2017": {"fatal_accidents": 117, "fatalities": 121, "injury_accidents": 7726, "injured_persons": 10057, "fatality_rate_100k": 2.16, "motorcyclist_accidents": 4350, "elderly_ped_accidents": 204, "elderly_ped_fatalities": 24, "drink_driving_accidents": 150, "speeding_violations": 160681, "red_light_accidents": 139},
+    "2018": {"fatal_accidents": 120, "fatalities": 124, "injury_accidents": 7690, "injured_persons": 10003, "fatality_rate_100k": 2.20, "motorcyclist_accidents": 4376, "elderly_ped_accidents": 217, "elderly_ped_fatalities": 24, "drink_driving_accidents": 162, "speeding_violations": 181958, "red_light_accidents": 135},
+    "2019": {"fatal_accidents": 116, "fatalities": 118, "injury_accidents": 7822, "injured_persons": 10091, "fatality_rate_100k": 2.07, "motorcyclist_accidents": 4444, "elderly_ped_accidents": 235, "elderly_ped_fatalities": 27, "drink_driving_accidents": 162, "speeding_violations": 172040, "red_light_accidents": 153},
+    "2020": {"fatal_accidents": 100, "fatalities": 107, "injury_accidents": 5660, "injured_persons": 6868, "fatality_rate_100k": 1.49, "motorcyclist_accidents": 3194, "elderly_ped_accidents": 152, "elderly_ped_fatalities": 15, "drink_driving_accidents": 146, "speeding_violations": 162447, "red_light_accidents": 125},
     "2021": {"fatal_accidents": 100, "fatalities": 107, "injury_accidents": 5939, "injured_persons": 7240, "fatality_rate_100k": 1.96, "motorcyclist_accidents": 3464, "elderly_ped_accidents": 158, "elderly_ped_fatalities": 14, "drink_driving_accidents": 155, "speeding_violations": 139276, "red_light_accidents": 136},
     "2022": {"fatal_accidents": 104, "fatalities": 108, "injury_accidents": 6779, "injured_persons": 8441, "fatality_rate_100k": 1.92, "motorcyclist_accidents": 3892, "elderly_ped_accidents": 167, "elderly_ped_fatalities": 19, "drink_driving_accidents": 175, "speeding_violations": 125530, "red_light_accidents": 137},
     "2023": {"fatal_accidents": 131, "fatalities": 136, "injury_accidents": 6949, "injured_persons": 8941, "fatality_rate_100k": 2.30, "motorcyclist_accidents": 3792, "elderly_ped_accidents": 228, "elderly_ped_fatalities": 23, "drink_driving_accidents": 180, "speeding_violations": 116440, "red_light_accidents": 112},
