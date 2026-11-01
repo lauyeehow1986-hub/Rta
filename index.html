@@ -202,11 +202,175 @@
       </div>
 
     </div>
+
+    <!-- Key Insights & Multi-Year Trends Synthesis Component -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-6">
+      
+      <!-- Section Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-[var(--border)] pb-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-red-500/10 text-red-500 rounded-full border border-red-500/20">Executive Synthesis</span>
+            <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 rounded-full border border-amber-500/20">SingStat &bull; SPF Longitudinal Audit</span>
+          </div>
+          <h3 class="text-xl font-bold tracking-tight text-[var(--foreground)]">Key Insights & Historical Road Safety Trends (2015 – 2026)</h3>
+          <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Summary of statistical trajectories, demographic vulnerabilities, and structural road safety catalysts across Singapore.</p>
+        </div>
+        <button onclick="switchTab('trends-tab')" class="text-xs text-blue-500 hover:underline font-semibold flex items-center gap-1">View Full 11-Year Data Table &rarr;</button>
+      </div>
+
+      <!-- 6-Metric High-Impact Scorecard -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase">Total Annual Crashes</div>
+          <div class="text-xl font-bold text-red-500 my-1">7,560</div>
+          <div class="text-[10px] text-red-500 font-medium">+33.6% vs 2020</div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase">Road Fatalities</div>
+          <div class="text-xl font-bold text-amber-500 my-1">149</div>
+          <div class="text-[10px] text-[var(--muted-foreground)] font-mono">2.44 / 100k pop</div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase">Elderly Pedestrian Crashes</div>
+          <div class="text-xl font-bold text-red-500 my-1">247</div>
+          <div class="text-[10px] text-red-500 font-medium">+62.5% vs 2020</div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase">Motorcycle Crash Share</div>
+          <div class="text-xl font-bold text-blue-500 my-1">55.6%</div>
+          <div class="text-[10px] text-blue-500 font-medium">15% fleet &bull; 3.65× risk</div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase">Speeding Violations</div>
+          <div class="text-xl font-bold text-purple-500 my-1">253k</div>
+          <div class="text-[10px] text-purple-500 font-medium">+117.8% camera jump</div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div class="text-[10px] font-semibold text-[var(--muted-foreground)] uppercase">Statutory BAC Threshold</div>
+          <div class="text-xl font-bold text-emerald-500 my-1">30 mg</div>
+          <div class="text-[10px] text-emerald-500 font-medium">July 2026 RTA Limit</div>
+        </div>
+
+      </div>
+
+      <!-- The 5 Big Historical Trends (2015–2026) -->
+      <div>
+        <h4 class="font-bold text-sm text-[var(--foreground)] mb-3 flex items-center gap-2">
+          <span>The 5 Definitive Historical Trends Shaping Singapore Roads</span>
+          <span class="text-[11px] text-[var(--muted-foreground)] font-normal">(SPF Annual & Mid-Year Data)</span>
+        </h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+          
+          <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-red-500">1. Post-COVID Rebound</span>
+              <span class="font-mono text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded text-[11px]">+33.6% Surge</span>
+            </div>
+            <p class="text-[var(--muted-foreground)] leading-relaxed">
+              Following the 2020 Circuit Breaker nadir (5,660 crashes, 107 deaths), total injury accidents surged +33.6% to 7,560 in 2025 (tracking 7,710 in 2026). Vehicular activity, ride-hailing commutes, and retail deliveries fully returned to pre-pandemic baselines.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-red-500">2. Elderly Pedestrian Crisis</span>
+              <span class="font-mono text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded">+62.5% Spike</span>
+            </div>
+            <p class="text-[var(--muted-foreground)] leading-relaxed">
+              Singapore entered "super-aged" society in 2026 (&gt;21% aged &ge;65). Senior pedestrian crashes rose +62.5% since 2020 (152 to 247). Crucially, seniors accounted for <b>75.0% of all pedestrian deaths</b> and <b>83.3% of jaywalking fatalities</b> in 2025.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-blue-500">3. Motorcycle Disproportion</span>
+              <span class="font-mono text-blue-500 font-bold bg-blue-500/10 px-2 py-0.5 rounded">55.6% Collisions</span>
+            </div>
+            <p class="text-[var(--muted-foreground)] leading-relaxed">
+              Motorcycles comprise only 15.0% of vehicles but accounted for 54.8% of crashes in 2025 and 55.6% in 1H2026 (53.0% of deaths). Accelerated by gig delivery deadlines and daily Causeway commuter exposure (3.65× hazard ratio).
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-purple-500">4. Automated Speed Detection</span>
+              <span class="font-mono text-purple-500 font-bold bg-purple-500/10 px-2 py-0.5 rounded">+117.8% Jump</span>
+            </div>
+            <p class="text-[var(--muted-foreground)] leading-relaxed">
+              Speeding violations logged by cameras more than doubled from 116,440 in 2023 to 253,550 in 2025. This was driven by the islandwide activation of speed enforcement functions within red-light cameras at 250+ traffic junctions.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-emerald-500">5. July 2026 BAC Amendment</span>
+              <span class="font-mono text-emerald-500 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">30mg / 100ml</span>
+            </div>
+            <p class="text-[var(--muted-foreground)] leading-relaxed">
+              Parliament amended the Road Traffic Act to slash statutory limits from 80mg blood / 35µg breath down to <b>30mg blood / 15µg breath</b>, achieving strict harmonization with Japan's gold-standard 0.03% BAC zero-tolerance standard.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-amber-500">6. Silver Zone Mitigation</span>
+              <span class="font-mono text-emerald-500 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">-68% Casualties</span>
+            </div>
+            <p class="text-[var(--muted-foreground)] leading-relaxed">
+              Where LTA has deployed Silver Zones (Toa Payoh, Bedok, Chinatown) with 40 km/h limits, chicanes, and raised pedestrian tables, senior casualty rates dropped by 68%–75%, proving that physical street design beats behavioral appeals.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Strategic Policy Insights: The COE Paradox & System Mechanisms -->
+      <div class="p-5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-4">
+        <h4 class="font-bold text-sm text-[var(--foreground)] flex items-center gap-2">
+          <span>Strategic Behavioral & Policy Insights</span>
+        </h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs leading-relaxed">
+          
+          <div class="space-y-1.5">
+            <b class="text-blue-500 text-xs">A. The COE Utilization Paradox</b>
+            <p class="text-[var(--muted-foreground)]">
+              Singapore ranks #6 safest in the world on a <b>per-capita basis (2.44 deaths / 100k pop)</b> due to strict quota limits on car ownership (162 vehicles / 1k pop). However, on a <b>per-vehicle basis, Singapore suffers 11.0 deaths / 100k vehicles—2.6× higher than Tokyo (3.4) or Sweden (3.8)</b>—because expensive S$100k+ COE assets are driven intensely for high daily mileage, ride-hailing, and commercial deliveries.
+            </p>
+          </div>
+
+          <div class="space-y-1.5">
+            <b class="text-red-500 text-xs">B. Diurnal Temporal Compression</b>
+            <p class="text-[var(--muted-foreground)]">
+              Accident probability spikes by <b>2.45× base hazard on Friday and Saturday late nights (23:30 – 04:00)</b>. Over 35% of fatal collisions occur in this narrow 4.5-hour weekend window, driven by alcohol departures from entertainment belts, empty-road high-speed coupes, and driver circadian low.
+            </p>
+          </div>
+
+          <div class="space-y-1.5">
+            <b class="text-emerald-500 text-xs">C. ERP 2.0 Paradigm Shift (2027)</b>
+            <p class="text-[var(--muted-foreground)]">
+              Mandatory islandwide satellite-based OBU installation transforms enforcement into real-time prevention. By continuously analyzing 1 Hz GNSS heading angle variance (&sigma;&theta; &gt; 4.2&deg;) and stationary dwell (v = 0 km/h for &gt;45s on active expressway lanes), emergency services achieve &lt;60s SLA automated crash dispatch.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
   </section>
 
 
   <!-- TAB 1: 7x24 TEMPORAL HEATMAP & ACCIDENT SEGREGATION -->
-  <section id="heatmap-tab" class="tab-content block space-y-6">
+  <section id="heatmap-tab" class="tab-content hidden space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
       <!-- Heatmap Canvas Container -->
